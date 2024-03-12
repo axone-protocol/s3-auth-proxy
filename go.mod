@@ -1,4 +1,4 @@
-module okp4/template-go
+module okp4/minio-auth-plugin
 
 go 1.21
 

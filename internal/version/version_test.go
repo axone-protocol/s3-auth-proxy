@@ -18,7 +18,7 @@ func TestNewInfo(t *testing.T) {
 func TestInfoString(t *testing.T) {
 	Convey("Given an info object", t, func() {
 		info := new(Info)
-		info.Name = "go-template"
+		info.Name = "minio-auth-plugin"
 		info.Version = "0.0"
 		info.GitCommit = "13245"
 		info.GoVersion = "go fake version 42"
@@ -26,7 +26,7 @@ func TestInfoString(t *testing.T) {
 		Convey("When the object string function is called", func() {
 			result := info.String()
 			Convey("Then the result should be an info string", func() {
-				expected := `go-template: 0.0
+				expected := `minio-auth-plugin: 0.0
 git commit: 13245
 go fake version 42`
 
