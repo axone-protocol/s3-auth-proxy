@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  auth-plugin:
+    build: .
+    container_name: auth-plugin
+    command:
+      - start
+      - --listen-addr
+      - 0.0.0.0:8080
+      - --minio-url
+      - minio:9000
+      - --minio-access-key
+      - minioadmin
+      - --minio-secret-key
+      - minioadmin
+    ports:
+      - "8080:8080"
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    depends_on:
+      - auth-plugin
+    command:
+      - server
+      - /data
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+
+  store-data:
+    image: quay.io/minio/mc
+    container_name: client
+    depends_on: 
+      - minio
+    volumes:
+      - .:/data
+    environment:
+      - MC_HOST_MYSTORAGE=http://minioadmin:minioadmin@minio:9000
+    entrypoint: >
+      /bin/sh -c "
+      mc mb MYSTORAGE/demo;
+      mc cp /data/README.md MYSTORAGE/demo;
+      exit 0;
+      "
