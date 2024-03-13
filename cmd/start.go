@@ -16,6 +16,7 @@ const (
 	FlagS3Endpoint      = "s3-endpoint"
 	FlagS3AccessKey     = "s3-access-key"
 	FlagS3SecretKey     = "s3-secret-key"
+	FlagS3Insecure      = "s3-insecure"
 )
 
 var (
@@ -26,6 +27,7 @@ var (
 	s3Endpoint      string
 	s3AccessKey     string
 	s3SecretKey     string
+	s3Insecure      bool
 )
 
 var startCmd = &cobra.Command{
@@ -60,4 +62,5 @@ func init() {
 	startCmd.PersistentFlags().StringVar(&s3Endpoint, FlagS3Endpoint, "", "The S3 endpoint to proxy")
 	startCmd.PersistentFlags().StringVar(&s3AccessKey, FlagS3AccessKey, "", "The S3 access key")
 	startCmd.PersistentFlags().StringVar(&s3SecretKey, FlagS3SecretKey, "", "The S3 secret key")
+	startCmd.PersistentFlags().BoolVar(&s3Insecure, FlagS3Insecure, false, "If specified we'll accept non encrypted connection with the S3")
 }
