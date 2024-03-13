@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/minio/minio-go/v7"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
@@ -10,8 +11,25 @@ import (
 
 func makeAuthenticateHandler(authenticator *auth.Authenticator) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		log.Info().Msg("Authentication requested")
-		ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
+		token, err := authenticator.Authenticate(ctx.Request.Body())
+		if err != nil {
+			ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
+			log.Info().Int("code", fasthttp.StatusForbidden).Err(err).Msg("🛑 VC authentication failed")
+			return
+		}
+
+		body, err := json.Marshal(map[string]interface{}{
+			"accessToken": token,
+		})
+		if err != nil {
+			ctx.Response.SetStatusCode(fasthttp.StatusInternalServerError)
+			log.Info().Int("code", fasthttp.StatusInternalServerError).Err(err).Msg("🛑 Couldn't marshal response")
+			return
+		}
+
+		ctx.Response.SetStatusCode(fasthttp.StatusOK)
+		ctx.Response.SetBody(body)
+		log.Info().Msg("✅ Authentication succeeded")
 	}
 }
 
@@ -31,7 +49,8 @@ func makeProxyHandler(s3Client *minio.Client, authenticator *auth.Authenticator)
 
 		if err := authenticator.Authorize(authHeader[7:]); err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
-			logger.Info().Int("code", fasthttp.StatusUnauthorized).Msg("🛑 Invalid jwt")
+			ctx.Response.SetBody([]byte(err.Error()))
+			logger.Info().Int("code", fasthttp.StatusUnauthorized).Err(err).Msg("🛑 Invalid jwt")
 			return
 		}
 

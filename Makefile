@@ -6,6 +6,8 @@ TARGET_FOLDER           = target
 DIST_FOLDER             = $(TARGET_FOLDER)/dist
 DOCKER_IMAGE_GOLANG_CI  = golangci/golangci-lint:v1.55
 
+BINARY 	:= ./${DIST_FOLDER}/${BINARY_NAME}
+
 # Some colors
 COLOR_GREEN  = $(shell tput -Txterm setaf 2)
 COLOR_YELLOW = $(shell tput -Txterm setaf 3)
@@ -80,6 +82,15 @@ test: test-go ## Pass all the tests
 test-go: build ## Pass the test for the go source code
 	@echo "${COLOR_CYAN} 🧪 Passing go tests${COLOR_RESET}"
 	@go test -v -covermode=count -coverprofile ./target/coverage.out ./...
+
+start: build
+	@echo "${COLOR_CYAN} 🛠️ Starting app"; \
+	${BINARY} start --listen-addr 0.0.0.0:8080 \
+		--jwt-secret-key 1d5be173d43385b984ef8c73fe4fb9e5ca5a31466f20bf8a250d06eec5f3079b \
+		--s3-endpoint localhost:9000 \
+		--s3-access-key minioadmin \
+		--s3-secret-key minioadmin \
+		--s3-insecure
 
 ## Help:
 help: ## Show this help.
