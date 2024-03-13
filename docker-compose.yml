@@ -1,23 +1,6 @@
 version: "3.8"
 
 services:
-  auth-proxy:
-    build: .
-    container_name: auth-proxy
-    command:
-      - start
-      - --listen-addr
-      - 0.0.0.0:8080
-      - --s3-endpoint
-      - minio:9000
-      - --s3-access-key
-      - minioadmin
-      - --s3-secret-key
-      - minioadmin
-      - --s3-insecure
-    ports:
-      - "8080:8080"
-
   minio:
     image: quay.io/minio/minio
     container_name: minio
