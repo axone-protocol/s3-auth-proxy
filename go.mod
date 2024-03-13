@@ -1,4 +1,4 @@
-module okp4/minio-auth-plugin
+module okp4/s3-auth-proxy
 
 go 1.21
 
