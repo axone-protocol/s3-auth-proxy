@@ -4,21 +4,20 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
+	"okp4/s3-auth-proxy/dataverse"
 	"time"
 )
 
 type Authenticator struct {
 	jwtSecretKey    []byte
-	node            string
-	cognitariumAddr string
+	dataverseClient *dataverse.Client
 	serviceID       string
 }
 
-func New(jwtSecretKey []byte, node, cognitariumAddr, serviceID string) *Authenticator {
+func New(jwtSecretKey []byte, dataverseClient *dataverse.Client, serviceID string) *Authenticator {
 	return &Authenticator{
 		jwtSecretKey:    jwtSecretKey,
-		node:            node,
-		cognitariumAddr: cognitariumAddr,
+		dataverseClient: dataverseClient,
 		serviceID:       serviceID,
 	}
 }
