@@ -1,7 +1,7 @@
 # ℹ Freely based on: https://gist.github.com/thomaspoignant/5b72d579bd5f311904d973652180c705
 
 # Constants
-BINARY_NAME             = minio-auth-plugin
+BINARY_NAME             = s3-auth-proxy
 TARGET_FOLDER           = target
 DIST_FOLDER             = $(TARGET_FOLDER)/dist
 DOCKER_IMAGE_GOLANG_CI  = golangci/golangci-lint:v1.55
@@ -17,9 +17,9 @@ COLOR_RESET  = $(shell tput -Txterm sgr0)
 VERSION  := $(shell cat version)
 COMMIT   := $(shell git log -1 --format='%H')
 LD_FLAGS  = \
-	-X okp4/minio-auth-plugin/internal/version.Name=$(BINARY_NAME) \
-	-X okp4/minio-auth-plugin/internal/version.Version=$(VERSION)  \
-	-X okp4/minio-auth-plugin/internal/version.Commit=$(COMMIT)
+	-X okp4/s3-auth-proxy/internal/version.Name=$(BINARY_NAME) \
+	-X okp4/s3-auth-proxy/internal/version.Version=$(VERSION)  \
+	-X okp4/s3-auth-proxy/internal/version.Commit=$(COMMIT)
 BUILD_FLAGS := -ldflags '$(LD_FLAGS)'
 
 # Commands

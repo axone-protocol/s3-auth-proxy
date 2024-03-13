@@ -8,9 +8,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
-	Use:   "minio-auth-plugin",
-	Short: "Minio authentication connector to the OKP4 chain.",
-	Long:  "Minio authentication connector to the OKP4 chain.",
+	Use:   "s3-auth-proxy",
+	Short: "S3 connector to the OKP4 chain.",
+	Long:  "S3 connector to the OKP4 chain.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

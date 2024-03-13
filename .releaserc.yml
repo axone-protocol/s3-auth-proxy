@@ -8,7 +8,7 @@ plugins:
     - preset: conventionalcommits
   - - "@semantic-release/changelog"
     - changelogFile: CHANGELOG.md
-      changelogTitle: "# ØKP4 minio auth plugin"
+      changelogTitle: "# ØKP4 S3 auth proxy"
   - - "@google/semantic-release-replace-plugin"
     - replacements:
         - files: [version]
@@ -25,18 +25,18 @@ plugins:
         make build-go-all
   - - "@semantic-release/github"
     - assets:
-        - name: minio-auth-plugin_darwin_amd64
+        - name: s3-auth-proxy_darwin_amd64
           label: Binary - Darwin amd64
-          path: "./target/dist/darwin/amd64/minio-auth-plugin"
-        - name: minio-auth-plugin_darwin_arm64
+          path: "./target/dist/darwin/amd64/s3-auth-proxy"
+        - name: s3-auth-proxy_darwin_arm64
           label: Binary - Darwin arm64
-          path: "./target/dist/darwin/arm64/minio-auth-plugin"
-        - name: minio-auth-plugin_linux_amd64
+          path: "./target/dist/darwin/arm64/s3-auth-proxy"
+        - name: s3-auth-proxy_linux_amd64
           label: Binary - Linux amd64
-          path: "./target/dist/linux/amd64/minio-auth-plugin"
-        - name: minio-auth-plugin_windows_amd64.exe
+          path: "./target/dist/linux/amd64/s3-auth-proxy"
+        - name: s3-auth-proxy_windows_amd64.exe
           label: Binary - Windows amd64
-          path: "./target/dist/windows/amd64/minio-auth-plugin.exe"
+          path: "./target/dist/windows/amd64/s3-auth-proxy.exe"
   - - "@semantic-release/git"
     - assets:
         - CHANGELOG.md

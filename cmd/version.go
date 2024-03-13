@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
-	"okp4/minio-auth-plugin/internal/version"
+	"okp4/s3-auth-proxy/internal/version"
 	"strings"
 
 	"github.com/spf13/cobra"
