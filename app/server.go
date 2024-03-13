@@ -2,14 +2,15 @@ package app
 
 import (
 	"github.com/fasthttp/router"
+	"github.com/minio/minio-go/v7"
 	"github.com/valyala/fasthttp"
-	"okp4/minio-auth-plugin/auth"
+	"okp4/s3-auth-proxy/auth"
 )
 
-func configure(authenticator *auth.Authenticator) *fasthttp.Server {
+func configure(minioClient *minio.Client, authenticator *auth.Authenticator) *fasthttp.Server {
 	r := router.New()
 	r.POST("/auth", makeAuthenticateHandler(authenticator))
-	r.POST("/authz", makeAuthPluginHandler(authenticator))
+	r.GET("/{bucket}/{filepath:*}", makeProxyHandler(minioClient, authenticator))
 
 	return &fasthttp.Server{
 		Handler: r.Handler,
