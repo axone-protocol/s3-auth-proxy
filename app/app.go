@@ -22,5 +22,5 @@ func New(listenAddr string, s3Client *minio.Client, authenticator *auth.Authenti
 
 func (a *AuthApp) Start() {
 	log.Info().Str("listenAddr", a.listenAddr).Msg("🔥 Listening")
-	log.Fatal().Err(configure(a.s3Client, a.authenticator).ListenAndServe(a.listenAddr)).Msg("🛑 Shutting down")
+	log.Fatal().Err(configure(a.s3Client, a.authenticator).ListenAndServe(a.listenAddr)).Msg("🧯 Shutting down")
 }

@@ -25,27 +25,27 @@ func makeProxyHandler(s3Client *minio.Client, authenticator *auth.Authenticator)
 
 		if len(authHeader) < 7 || authHeader[:6] != "Bearer" {
 			ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
-			logger.Info().Int("code", fasthttp.StatusUnauthorized).Msg("Couldn't find bearer token")
+			logger.Info().Int("code", fasthttp.StatusUnauthorized).Msg("🛑 Couldn't find bearer token")
 			return
 		}
 
 		if err := authenticator.Authorize(authHeader[7:]); err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
-			logger.Info().Int("code", fasthttp.StatusUnauthorized).Msg("Invalid jwt")
+			logger.Info().Int("code", fasthttp.StatusUnauthorized).Msg("🛑 Invalid jwt")
 			return
 		}
 
 		obj, err := s3Client.GetObject(context.Background(), bucket, filepath, minio.GetObjectOptions{})
 		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusInternalServerError)
-			logger.Info().Int("code", fasthttp.StatusInternalServerError).Err(err).Msg("Could not proxy the request")
+			logger.Info().Int("code", fasthttp.StatusInternalServerError).Err(err).Msg("😿 Could not proxy the request")
 			return
 		}
 
 		info, err := obj.Stat()
 		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusInternalServerError)
-			logger.Info().Int("code", fasthttp.StatusInternalServerError).Err(err).Msg("Could not proxy the request")
+			logger.Info().Int("code", fasthttp.StatusInternalServerError).Err(err).Msg("😿 Could not proxy the request")
 			return
 		}
 
@@ -53,7 +53,7 @@ func makeProxyHandler(s3Client *minio.Client, authenticator *auth.Authenticator)
 		ctx.Response.Header.SetContentType(info.ContentType)
 		ctx.Response.SetBodyStream(obj, -1)
 
-		logger.Info().Int("code", fasthttp.StatusOK).Msg("Proxying request")
+		logger.Info().Int("code", fasthttp.StatusOK).Msg("✅ Proxying request")
 
 	}
 }
