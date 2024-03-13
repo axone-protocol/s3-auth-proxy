@@ -54,7 +54,7 @@ var startCmd = &cobra.Command{
 			return err
 		}
 
-		ctx, cancelFn := context.WithTimeout(context.Background(), 2*time.Second)
+		ctx, cancelFn := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancelFn()
 		dataverseClient, err := dataverse.NewClient(ctx, nodeGrpcAddr, dataverseAddr, getTransportCredentials())
 		if err != nil {

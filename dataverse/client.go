@@ -52,7 +52,7 @@ func queryCognitariumAddr(ctx context.Context, dataverseAddr string, wasmClient 
 	}
 
 	var data struct {
-		TriplestoreAddress string
+		TriplestoreAddress string `json:"triplestore_address"`
 	}
 	if err := json.Unmarshal(resp.Data, &data); err != nil {
 		return "", err
