@@ -13,6 +13,7 @@ const (
 	FlagCognitariumAddr = "cognitarium-addr"
 	FlagServiceId       = "id"
 	FlagListenAddr      = "listen-addr"
+	FlagJWTSecretKey    = "jwt-secret-key"
 	FlagS3Endpoint      = "s3-endpoint"
 	FlagS3AccessKey     = "s3-access-key"
 	FlagS3SecretKey     = "s3-secret-key"
@@ -24,6 +25,7 @@ var (
 	cognitariumAddr string
 	serviceID       string
 	listenAddr      string
+	jwtSecretKey    []byte
 	s3Endpoint      string
 	s3AccessKey     string
 	s3SecretKey     string
@@ -45,7 +47,7 @@ var startCmd = &cobra.Command{
 		app.New(
 			listenAddr,
 			s3Client,
-			auth.New(nodeGrpcAddr, cognitariumAddr, serviceID),
+			auth.New(jwtSecretKey, nodeGrpcAddr, cognitariumAddr, serviceID),
 		).Start()
 
 		return nil
@@ -59,6 +61,7 @@ func init() {
 	startCmd.PersistentFlags().StringVar(&cognitariumAddr, FlagCognitariumAddr, "", "The cognitarium contract address")
 	startCmd.PersistentFlags().StringVar(&serviceID, FlagServiceId, "", "The service's identifier served")
 	startCmd.PersistentFlags().StringVar(&listenAddr, FlagListenAddr, "127.0.0.1:8080", "The server's listen address")
+	startCmd.PersistentFlags().BytesHexVar(&jwtSecretKey, FlagJWTSecretKey, []byte{}, "The hex encoded secret key used to issue JWT tokens")
 	startCmd.PersistentFlags().StringVar(&s3Endpoint, FlagS3Endpoint, "", "The S3 endpoint to proxy")
 	startCmd.PersistentFlags().StringVar(&s3AccessKey, FlagS3AccessKey, "", "The S3 access key")
 	startCmd.PersistentFlags().StringVar(&s3SecretKey, FlagS3SecretKey, "", "The S3 secret key")
