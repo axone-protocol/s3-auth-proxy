@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-func (a *Authenticator) issueJwt() (string, error) {
+func (a *Authenticator) issueJwt(authenticatedSvc string) (string, error) {
 	now := time.Now()
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Audience:  "", // TODO: put the authenticated service identifier here
+		Audience:  authenticatedSvc,
 		ExpiresAt: now.Add(5 * time.Minute).Unix(),
 		Id:        uuid.New().String(),
 		IssuedAt:  now.Unix(),
