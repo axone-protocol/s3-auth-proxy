@@ -3,10 +3,11 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"okp4/s3-auth-proxy/auth"
+
 	"github.com/minio/minio-go/v7"
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
-	"okp4/s3-auth-proxy/auth"
 )
 
 func makeAuthenticateHandler(authenticator *auth.Authenticator) fasthttp.RequestHandler {
@@ -75,6 +76,5 @@ func makeProxyHandler(s3Client *minio.Client, authenticator *auth.Authenticator)
 		ctx.Response.SetBodyStream(obj, -1)
 
 		logger.Info().Int("code", fasthttp.StatusOK).Msg("✅ Proxying request")
-
 	}
 }

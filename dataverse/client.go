@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/CosmWasm/wasmd/x/wasm/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

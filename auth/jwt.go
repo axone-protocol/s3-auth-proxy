@@ -2,9 +2,10 @@ package auth
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"time"
 )
 
 func (a *Authenticator) issueJwt(authenticatedSvc string) (string, error) {

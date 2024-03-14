@@ -2,8 +2,9 @@ package auth
 
 import (
 	"fmt"
-	"github.com/hyperledger/aries-framework-go/pkg/doc/verifiable"
 	"time"
+
+	"github.com/hyperledger/aries-framework-go/pkg/doc/verifiable"
 )
 
 type authClaim struct {

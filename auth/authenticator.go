@@ -1,9 +1,10 @@
 package auth
 
 import (
+	"okp4/s3-auth-proxy/dataverse"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/piprate/json-gold/ld"
-	"okp4/s3-auth-proxy/dataverse"
 )
 
 type Authenticator struct {
@@ -33,7 +34,7 @@ func (a *Authenticator) Authenticate(raw []byte) (string, error) {
 	return a.issueJwt(claim.ID)
 }
 
-// Authorize verifies the provided jwt access token
+// Authorize verifies the provided jwt access token.
 func (a *Authenticator) Authorize(raw string) (*jwt.StandardClaims, error) {
 	return a.verifyJwt(raw)
 }

@@ -1,10 +1,11 @@
 package app
 
 import (
+	"okp4/s3-auth-proxy/auth"
+
 	"github.com/fasthttp/router"
 	"github.com/minio/minio-go/v7"
 	"github.com/valyala/fasthttp"
-	"okp4/s3-auth-proxy/auth"
 )
 
 func configure(minioClient *minio.Client, authenticator *auth.Authenticator) *fasthttp.Server {
