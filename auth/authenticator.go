@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/golang-jwt/jwt"
 	"github.com/piprate/json-gold/ld"
 	"okp4/s3-auth-proxy/dataverse"
 )
@@ -33,6 +34,6 @@ func (a *Authenticator) Authenticate(raw []byte) (string, error) {
 }
 
 // Authorize verifies the provided jwt access token
-func (a *Authenticator) Authorize(raw string) error {
+func (a *Authenticator) Authorize(raw string) (*jwt.StandardClaims, error) {
 	return a.verifyJwt(raw)
 }

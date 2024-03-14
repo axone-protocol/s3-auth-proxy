@@ -47,13 +47,15 @@ func makeProxyHandler(s3Client *minio.Client, authenticator *auth.Authenticator)
 			return
 		}
 
-		if err := authenticator.Authorize(authHeader[7:]); err != nil {
+		claims, err := authenticator.Authorize(authHeader[7:])
+		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
 			ctx.Response.SetBody([]byte(err.Error()))
 			logger.Info().Int("code", fasthttp.StatusUnauthorized).Err(err).Msg("🛑 Invalid jwt")
 			return
 		}
 
+		logger = logger.With().Str("aud", claims.Audience).Str("jti", claims.Id).Logger()
 		obj, err := s3Client.GetObject(context.Background(), bucket, filepath, minio.GetObjectOptions{})
 		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusInternalServerError)

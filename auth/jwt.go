@@ -20,16 +20,22 @@ func (a *Authenticator) issueJwt(authenticatedSvc string) (string, error) {
 	}).SignedString(a.jwtSecretKey)
 }
 
-func (a *Authenticator) verifyJwt(raw string) error {
-	token, err := jwt.Parse(raw, func(_ *jwt.Token) (interface{}, error) {
+func (a *Authenticator) verifyJwt(raw string) (*jwt.StandardClaims, error) {
+	token, err := jwt.ParseWithClaims(raw, &jwt.StandardClaims{}, func(_ *jwt.Token) (interface{}, error) {
 		return a.jwtSecretKey, nil
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if !token.Valid {
-		return fmt.Errorf("invalid token")
+		return nil, fmt.Errorf("invalid token")
 	}
-	return nil
+
+	c, ok := token.Claims.(*jwt.StandardClaims)
+	if !ok {
+		return nil, fmt.Errorf("invalid claims")
+	}
+
+	return c, nil
 }
