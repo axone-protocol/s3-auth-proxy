@@ -19,7 +19,7 @@ const (
 	FlagGrpcNoTLS         = "grpc-no-tls"
 	FlagGrpcTLSSkipVerify = "grpc-tls-skip-verify"
 	FlagDataverseAddr     = "dataverse-addr"
-	FlagServiceId         = "id"
+	FlagServiceId         = "svc-id"
 	FlagListenAddr        = "listen-addr"
 	FlagJWTSecretKey      = "jwt-secret-key"
 	FlagS3Endpoint        = "s3-endpoint"
