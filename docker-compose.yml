@@ -16,7 +16,7 @@ services:
   store-data:
     image: quay.io/minio/mc
     container_name: client
-    depends_on: 
+    depends_on:
       - minio
     volumes:
       - .:/data
