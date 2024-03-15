@@ -1,13 +1,14 @@
 package app
 
 import (
-	"github.com/minio/minio-go/v7"
-	"github.com/rs/zerolog/log"
 	"net"
 	"okp4/s3-auth-proxy/auth"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/minio/minio-go/v7"
+	"github.com/rs/zerolog/log"
 )
 
 type AuthApp struct {

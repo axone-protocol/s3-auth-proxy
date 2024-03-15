@@ -1,54 +1,40 @@
 package auth
 
 import (
-	"fmt"
+	"okp4/s3-auth-proxy/dataverse"
+
 	"github.com/golang-jwt/jwt"
-	"github.com/google/uuid"
-	"time"
+	"github.com/piprate/json-gold/ld"
 )
 
 type Authenticator struct {
 	jwtSecretKey    []byte
-	node            string
-	cognitariumAddr string
+	dataverseClient *dataverse.Client
 	serviceID       string
+	documentLoader  ld.DocumentLoader
 }
 
-func New(jwtSecretKey []byte, node, cognitariumAddr, serviceID string) *Authenticator {
+func New(jwtSecretKey []byte, dataverseClient *dataverse.Client, serviceID string) *Authenticator {
 	return &Authenticator{
 		jwtSecretKey:    jwtSecretKey,
-		node:            node,
-		cognitariumAddr: cognitariumAddr,
+		dataverseClient: dataverseClient,
 		serviceID:       serviceID,
+		documentLoader:  ld.NewDefaultDocumentLoader(nil),
 	}
 }
 
 // Authenticate verifies the provided verifiable credential and issue a related jwt access token if authentication
 // succeeds.
-func (a *Authenticator) Authenticate(_vc []byte) (string, error) {
-	now := time.Now()
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Audience:  "", // TODO: put the authenticated service identifier here
-		ExpiresAt: now.Add(5 * time.Minute).Unix(),
-		Id:        uuid.New().String(),
-		IssuedAt:  now.Unix(),
-		Issuer:    a.serviceID,
-		NotBefore: now.Unix(),
-		Subject:   a.serviceID,
-	}).SignedString(a.jwtSecretKey)
+func (a *Authenticator) Authenticate(raw []byte) (string, error) {
+	claim, err := a.parseVC(raw)
+	if err != nil {
+		return "", err
+	}
+
+	return a.issueJwt(claim.ID)
 }
 
-// Authorize verifies the provided jwt access token
-func (a *Authenticator) Authorize(raw string) error {
-	token, err := jwt.Parse(raw, func(_ *jwt.Token) (interface{}, error) {
-		return a.jwtSecretKey, nil
-	})
-	if err != nil {
-		return err
-	}
-
-	if !token.Valid {
-		return fmt.Errorf("invalid token")
-	}
-	return nil
+// Authorize verifies the provided jwt access token.
+func (a *Authenticator) Authorize(raw string) (*jwt.StandardClaims, error) {
+	return a.verifyJwt(raw)
 }
