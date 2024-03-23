@@ -195,6 +195,31 @@ func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (strin
 	return iri.Full, nil
 }
 
+func (c *Client) CheckGovernance(ctx context.Context, govCode, action, subject, zone string) (bool, error) {
+	program, err := makeGovCheckProgram(govCode, action, subject, zone)
+	if err != nil {
+		return false, err
+	}
+
+	resp, err := c.logicClient.Ask(ctx, &logictypes.QueryServiceAskRequest{
+		Program: program,
+		Query:   "tell(Result, Evidence).",
+	})
+	if err != nil {
+		return false, err
+	}
+
+	if len(resp.Answer.Results) != 1 {
+		return false, nil
+	}
+	for _, substitution := range resp.Answer.Results[0].Substitutions {
+		if substitution.Variable == "Result" {
+			return substitution.Expression == "permitted", nil
+		}
+	}
+	return false, nil
+}
+
 func queryCognitariumAddr(ctx context.Context, dataverseAddr string, wasmClient wasmtypes.QueryClient) (string, error) {
 	query, err := json.Marshal(map[string]interface{}{
 		"dataverse": struct{}{},
