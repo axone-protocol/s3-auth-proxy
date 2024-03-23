@@ -41,6 +41,83 @@ func NewClient(ctx context.Context, nodeGrpc, dataverseAddr string, transportCre
 	}, nil
 }
 
+func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc string) (string, error) {
+	resp, err := c.queryCognitariumSelect(ctx, Select{
+		Query: SelectQuery{
+			Prefixes: []Prefix{{
+				Prefix:    "exec",
+				Namespace: "https://w3id.org/okp4/ontology/v3/schema/credential/digital-service/execution-order/",
+			}},
+			Select: []SelectItem{{Variable: "zone"}},
+			Where: []WhereCondition{
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "credId"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#subject"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: order}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "credId"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#type"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Prefixed: "exec:DigitalServiceExecutionOrderCredential"}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "credId"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#claim"}},
+						Object:    VarOrNodeOrLiteral{Variable: "claim"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "claim"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:executedBy"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execSvc}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "claim"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:inZone"}},
+						Object:    VarOrNodeOrLiteral{Variable: "zone"},
+					}},
+				},
+			},
+			Limit: 1,
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+
+	if len(resp.Results.Bindings) != 1 {
+		return "", fmt.Errorf("could not find order")
+	}
+
+	zoneBinding, ok := resp.Results.Bindings[0]["zone"]
+	if !ok {
+		return "", fmt.Errorf("could not find order zone")
+	}
+	if zoneBinding.Type != "uri" {
+		return "", fmt.Errorf("could not find order zone")
+	}
+
+	zoneIRI, ok := zoneBinding.Value.(map[string]interface{})
+	if !ok {
+		return "", fmt.Errorf("could not decode order select")
+	}
+
+	var iri IRI
+	if err := mapstructure.Decode(zoneIRI, &iri); err != nil {
+		return "", fmt.Errorf("could not decode order select: %w", err)
+	}
+
+	return iri.Full, nil
+}
+
 func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (string, error) {
 	resp, err := c.queryCognitariumSelect(ctx, Select{
 		Query: SelectQuery{
@@ -116,7 +193,7 @@ func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (strin
 	}
 
 	return iri.Full, nil
-}t
+}
 
 func queryCognitariumAddr(ctx context.Context, dataverseAddr string, wasmClient wasmtypes.QueryClient) (string, error) {
 	query, err := json.Marshal(map[string]interface{}{
