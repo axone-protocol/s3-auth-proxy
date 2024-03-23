@@ -5,13 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/mitchellh/mapstructure"
+
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	logictypes "github.com/okp4/okp4d/v7/x/logic/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
 
 type Client struct {
-	wasmClient      types.QueryClient
+	wasmClient      wasmtypes.QueryClient
+	logicClient     logictypes.QueryServiceClient
 	cognitariumAddr string
 }
 
@@ -24,7 +28,7 @@ func NewClient(ctx context.Context, nodeGrpc, dataverseAddr string, transportCre
 		return nil, fmt.Errorf("couldn't create grpc connection: %w", err)
 	}
 
-	wasmClient := types.NewQueryClient(grpcConn)
+	wasmClient := wasmtypes.NewQueryClient(grpcConn)
 	cognitariumAddr, err := queryCognitariumAddr(ctx, dataverseAddr, wasmClient)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't query cognitarium address: %w", err)
@@ -32,6 +36,7 @@ func NewClient(ctx context.Context, nodeGrpc, dataverseAddr string, transportCre
 
 	return &Client{
 		wasmClient:      wasmClient,
+		logicClient:     logictypes.NewQueryServiceClient(grpcConn),
 		cognitariumAddr: cognitariumAddr,
 	}, nil
 }
