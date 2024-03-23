@@ -3,10 +3,11 @@ package cmd
 import (
 	"context"
 	"crypto/tls"
+	"time"
+
 	"okp4/s3-auth-proxy/app"
 	"okp4/s3-auth-proxy/auth"
 	"okp4/s3-auth-proxy/dataverse"
-	"time"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"

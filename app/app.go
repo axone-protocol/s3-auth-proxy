@@ -2,10 +2,11 @@ package app
 
 import (
 	"net"
-	"okp4/s3-auth-proxy/auth"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"okp4/s3-auth-proxy/auth"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/rs/zerolog/log"

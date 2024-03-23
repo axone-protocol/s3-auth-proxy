@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"encoding/json"
+
 	"okp4/s3-auth-proxy/auth"
 
 	"github.com/minio/minio-go/v7"
@@ -12,7 +13,7 @@ import (
 
 func makeAuthenticateHandler(authenticator *auth.Authenticator) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		token, err := authenticator.Authenticate(ctx.Request.Body())
+		token, err := authenticator.Authenticate(context.Background(), ctx.Request.Body())
 		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
 			log.Info().Int("code", fasthttp.StatusForbidden).Err(err).Msg("🛑 VC authentication failed")

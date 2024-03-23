@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"context"
+	"fmt"
+
 	"okp4/s3-auth-proxy/dataverse"
 
 	"github.com/golang-jwt/jwt"
@@ -25,10 +28,28 @@ func New(jwtSecretKey []byte, dataverseClient *dataverse.Client, serviceID strin
 
 // Authenticate verifies the provided verifiable credential and issue a related jwt access token if authentication
 // succeeds.
-func (a *Authenticator) Authenticate(raw []byte) (string, error) {
+func (a *Authenticator) Authenticate(ctx context.Context, raw []byte) (string, error) {
 	claim, err := a.parseVC(raw)
 	if err != nil {
 		return "", err
+	}
+
+	zone, err := a.dataverseClient.GetExecutionOrderContext(ctx, claim.ForOrder, claim.ID)
+	if err != nil {
+		return "", err
+	}
+
+	govCode, err := a.dataverseClient.GetResourceGovCode(ctx, a.serviceID)
+	if err != nil {
+		return "", err
+	}
+
+	ok, err := a.dataverseClient.CheckGovernance(ctx, govCode, "service:use", claim.ID, zone)
+	if err != nil {
+		return "", err
+	}
+	if !ok {
+		return "", fmt.Errorf("governance rejected access")
 	}
 
 	return a.issueJwt(claim.ID)
