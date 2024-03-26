@@ -49,7 +49,7 @@ func (a *Authenticator) Authenticate(ctx context.Context, raw []byte) (string, e
 		return "", fmt.Errorf("couldn't check governance: %w", err)
 	}
 	if res.Result != "permitted" {
-		return "", fmt.Errorf("governance rejected access: %s", res.Evidence)
+		return "", fmt.Errorf("governance rejected access, evidence: %s", res.Evidence)
 	}
 
 	return a.issueJwt(claim.ID)

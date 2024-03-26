@@ -2,20 +2,12 @@ package dataverse
 
 import (
 	"bytes"
-	"html/template"
+	_ "embed"
+	"text/template"
 )
 
-var govCheckTplStr = `:- consult('{{ .GovCode }}').
-
-action('{{ .Action }}').
-subject('{{ .Subject }}').
-zone('{{ .Zone }}').
-
-tell(Result, Evidence) :-
-bagof(P:Modality, paragraph(P, Modality), Evidence),
-(   member(_: 'prohibited', Evidence) -> Result = 'prohibited'
-;   member(_: 'permitted', Evidence) -> Result = 'permitted'
-).`
+//go:embed gov-check-program-tpl.pl
+var govCheckTplStr string
 
 var govCheckTpl *template.Template
 
