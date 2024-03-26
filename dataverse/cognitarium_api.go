@@ -1,5 +1,11 @@
 package dataverse
 
+import (
+	"fmt"
+
+	"github.com/mitchellh/mapstructure"
+)
+
 type Select struct {
 	Query SelectQuery `json:"query"`
 }
@@ -84,4 +90,38 @@ type Literal struct {
 		Value    string `json:"value"`
 		Datatype IRI    `json:"datatype"`
 	} `json:"typed_value,omitempty"`
+}
+
+func (r *SelectResponse) GetVariableValues(name string) ([]string, error) {
+	valuesMap := make(map[string]interface{})
+	for _, binding := range r.Results.Bindings {
+		if val, ok := binding[name]; ok {
+			switch val.Type {
+			case "uri":
+				valIRI, ok := val.Value.(map[string]interface{})
+				if !ok {
+					return nil, fmt.Errorf("could not decode binding value")
+				}
+
+				var iri IRI
+				if err := mapstructure.Decode(valIRI, &iri); err != nil {
+					return nil, fmt.Errorf("could not decode binding iri value: %w", err)
+				}
+				valuesMap[iri.Full] = nil
+			case "literal":
+				valStr, ok := val.Value.(string)
+				if !ok {
+					return nil, fmt.Errorf("could not decode binding value")
+				}
+				valuesMap[valStr] = nil
+			}
+		}
+	}
+
+	values := make([]string, 0, len(valuesMap))
+	for v := range valuesMap {
+		values = append(values, v)
+	}
+
+	return values, nil
 }
