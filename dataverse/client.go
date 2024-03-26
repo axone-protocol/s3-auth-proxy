@@ -195,10 +195,14 @@ func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (strin
 	return iri.Full, nil
 }
 
-func (c *Client) CheckGovernance(ctx context.Context, govCode, action, subject, zone string) (bool, error) {
+func (c *Client) ExecGovernance(ctx context.Context, govCode, action, subject, zone string) (*struct {
+	Result   string
+	Evidence string
+}, error,
+) {
 	program, err := makeGovCheckProgram(govCode, action, subject, zone)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
 	resp, err := c.logicClient.Ask(ctx, &logictypes.QueryServiceAskRequest{
@@ -206,18 +210,32 @@ func (c *Client) CheckGovernance(ctx context.Context, govCode, action, subject, 
 		Query:   "tell(Result, Evidence).",
 	})
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
 	if len(resp.Answer.Results) != 1 {
-		return false, nil
+		return nil, fmt.Errorf("no result")
 	}
-	for _, substitution := range resp.Answer.Results[0].Substitutions {
-		if substitution.Variable == "Result" {
-			return substitution.Expression == "permitted", nil
+
+	resolveVar := func(name string) *string {
+		for _, substitution := range resp.Answer.Results[0].Substitutions {
+			if substitution.Variable == name {
+				return &substitution.Expression
+			}
 		}
+		return nil
 	}
-	return false, nil
+
+	result := resolveVar("Result")
+	evidence := resolveVar("Evidence")
+	if result == nil || evidence == nil {
+		return nil, fmt.Errorf("couldn't resolve variables")
+	}
+
+	return &struct {
+		Result   string
+		Evidence string
+	}{Result: *result, Evidence: *evidence}, nil
 }
 
 func queryCognitariumAddr(ctx context.Context, dataverseAddr string, wasmClient wasmtypes.QueryClient) (string, error) {

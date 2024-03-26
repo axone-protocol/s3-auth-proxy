@@ -31,25 +31,25 @@ func New(jwtSecretKey []byte, dataverseClient *dataverse.Client, serviceID strin
 func (a *Authenticator) Authenticate(ctx context.Context, raw []byte) (string, error) {
 	claim, err := a.parseVC(raw)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't parse VC: %w", err)
 	}
 
 	zone, err := a.dataverseClient.GetExecutionOrderContext(ctx, claim.ForOrder, claim.ID)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't fetch execution order context: %w", err)
 	}
 
 	govCode, err := a.dataverseClient.GetResourceGovCode(ctx, a.serviceID)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't get governance code: %w", err)
 	}
 
-	ok, err := a.dataverseClient.CheckGovernance(ctx, govCode, "service:use", claim.ID, zone)
+	res, err := a.dataverseClient.ExecGovernance(ctx, govCode, "service:use", claim.ID, zone)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't check governance: %w", err)
 	}
-	if !ok {
-		return "", fmt.Errorf("governance rejected access")
+	if res.Result != "permitted" {
+		return "", fmt.Errorf("governance rejected access: %s", res.Evidence)
 	}
 
 	return a.issueJwt(claim.ID)
