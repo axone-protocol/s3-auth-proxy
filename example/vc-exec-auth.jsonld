@@ -1,0 +1,17 @@
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://w3id.org/okp4/ontology/vnext/schema/credential/digital-service/authentication/"
+    ],
+    "type": [
+        "VerifiableCredential",
+        "DigitalServiceAuthenticationCredential"
+    ],
+    "id": "https://w3id.org/okp4/ontology/vnext/schema/credential/digital-service/authentication/72cab400-5bd6-4eb4-8605-a5ee8c1a45c9",
+    "credentialSubject": {
+        "id": "did:key:zQ3shuJ8dEheKxgedw1ZQvP1PHthG2vokpCTdqggHvBxZ55Bz",
+        "forOrder": "did:key:zQ3shaunKKxQKVQxRG6P69ER8h88cRuXkSA73jbhiEG5hfQ4m",
+        "toService": "did:key:zQ3shbn6v6Mwtc6nSe5LnBmBY44seFqdRKXtf5eH8tQknZCcw"
+    },
+    "issuer": "did:key:zQ3shuJ8dEheKxgedw1ZQvP1PHthG2vokpCTdqggHvBxZ55Bz"
+}

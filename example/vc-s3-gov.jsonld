@@ -1,0 +1,20 @@
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://w3id.org/okp4/ontology/vnext/schema/credential/governance/text/"
+    ],
+    "type": [
+        "VerifiableCredential",
+        "GovernanceTextCredential"
+    ],
+    "id": "https://w3id.org/okp4/ontology/vnext/schema/credential/governance/text/c29835be-9d4c-4a9a-8525-145bc85b6f95",
+    "credentialSubject": {
+        "id": "did:key:zQ3shbn6v6Mwtc6nSe5LnBmBY44seFqdRKXtf5eH8tQknZCcw",
+        "isGovernedBy": {
+            "type": "GovernanceText",
+            "fromGovernance": "cosmwasm:law-stone:okp41fkwjqyfdyktgu5f59jpwhvl23zh8aav7f98ml9quly62jx2sehysc77juv?query=%22program_code%22"
+        }
+    },
+    "issuanceDate": "2024-02-06T13:29:00.475304+01:00",
+    "issuer": "did:key:zQ3shbn6v6Mwtc6nSe5LnBmBY44seFqdRKXtf5eH8tQknZCcw"
+}
