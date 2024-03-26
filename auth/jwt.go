@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (a *Authenticator) issueJwt(authenticatedSvc string) (string, error) {
+func (a *Authenticator) issueJwt(authenticatedSvc string, _read []string) (string, error) {
 	now := time.Now()
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		Audience:  authenticatedSvc,
