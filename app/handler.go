@@ -1,8 +1,8 @@
 package app
 
 import (
-	"context"
 	"encoding/json"
+
 	"okp4/s3-auth-proxy/auth"
 
 	"github.com/minio/minio-go/v7"
@@ -12,7 +12,7 @@ import (
 
 func makeAuthenticateHandler(authenticator *auth.Authenticator) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		token, err := authenticator.Authenticate(ctx.Request.Body())
+		token, err := authenticator.Authenticate(ctx, ctx.Request.Body())
 		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
 			log.Info().Int("code", fasthttp.StatusForbidden).Err(err).Msg("🛑 VC authentication failed")
@@ -57,7 +57,7 @@ func makeProxyHandler(s3Client *minio.Client, authenticator *auth.Authenticator)
 		}
 
 		logger = logger.With().Str("aud", claims.Audience).Str("jti", claims.Id).Logger()
-		obj, err := s3Client.GetObject(context.Background(), bucket, filepath, minio.GetObjectOptions{})
+		obj, err := s3Client.GetObject(ctx, bucket, filepath, minio.GetObjectOptions{})
 		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusInternalServerError)
 			logger.Info().Int("code", fasthttp.StatusInternalServerError).Err(err).Msg("😿 Could not proxy the request")
