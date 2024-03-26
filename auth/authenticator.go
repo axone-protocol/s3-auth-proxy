@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/valyala/fasthttp"
+
 	"okp4/s3-auth-proxy/dataverse"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/piprate/json-gold/ld"
 )
 
@@ -61,11 +62,11 @@ func (a *Authenticator) Authenticate(ctx context.Context, raw []byte) (string, e
 			continue
 		}
 
-		url, err := a.dataverseClient.GetResourcePublication(ctx, r, a.serviceID)
+		uri, err := a.dataverseClient.GetResourcePublication(ctx, r, a.serviceID)
 		if err != nil {
 			return "", fmt.Errorf("couldn't fetch resource publication: %w", err)
 		}
-		if url == nil {
+		if uri == nil {
 			continue
 		}
 
@@ -76,14 +77,23 @@ func (a *Authenticator) Authenticate(ctx context.Context, raw []byte) (string, e
 		if res.Result != "permitted" {
 			return "", fmt.Errorf("access rejected by governance, evidence: %s", res.Evidence)
 		}
+		resourcePublications = append(resourcePublications, *uri)
 	}
 
 	return a.issueJwt(claim.ID, resourcePublications)
 }
 
 // Authorize verifies the provided jwt access token.
-func (a *Authenticator) Authorize(raw string) (*jwt.StandardClaims, error) {
-	return a.verifyJwt(raw)
+func (a *Authenticator) Authorize(token string, uri *fasthttp.URI) (*ProxyClaims, error) {
+	claims, err := a.verifyJwt(token)
+	if err != nil {
+		return nil, err
+	}
+
+	if !claims.CanRead(uri.String()) {
+		return claims, fmt.Errorf("access to requested resource unauthorized")
+	}
+	return claims, nil
 }
 
 func (a *Authenticator) execGovernance(ctx context.Context, resource, action, subject, zone string) (*dataverse.GovernanceExecAnswer, error) {

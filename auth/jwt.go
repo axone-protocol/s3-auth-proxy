@@ -8,21 +8,44 @@ import (
 	"github.com/google/uuid"
 )
 
-func (a *Authenticator) issueJwt(authenticatedSvc string, _read []string) (string, error) {
+type ProxyClaims struct {
+	jwt.StandardClaims
+	Can Permissions `json:"can"`
+}
+
+type Permissions struct {
+	Read []string `json:"read"`
+}
+
+func (c *ProxyClaims) CanRead(uri string) bool {
+	for _, u := range c.Can.Read {
+		if u == uri {
+			return true
+		}
+	}
+	return false
+}
+
+func (a *Authenticator) issueJwt(authenticatedSvc string, readURIs []string) (string, error) {
 	now := time.Now()
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Audience:  authenticatedSvc,
-		ExpiresAt: now.Add(5 * time.Minute).Unix(),
-		Id:        uuid.New().String(),
-		IssuedAt:  now.Unix(),
-		Issuer:    a.serviceID,
-		NotBefore: now.Unix(),
-		Subject:   a.serviceID,
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, ProxyClaims{
+		StandardClaims: jwt.StandardClaims{
+			Audience:  authenticatedSvc,
+			ExpiresAt: now.Add(5 * time.Minute).Unix(),
+			Id:        uuid.New().String(),
+			IssuedAt:  now.Unix(),
+			Issuer:    a.serviceID,
+			NotBefore: now.Unix(),
+			Subject:   a.serviceID,
+		},
+		Can: Permissions{
+			Read: readURIs,
+		},
 	}).SignedString(a.jwtSecretKey)
 }
 
-func (a *Authenticator) verifyJwt(raw string) (*jwt.StandardClaims, error) {
-	token, err := jwt.ParseWithClaims(raw, &jwt.StandardClaims{}, func(_ *jwt.Token) (interface{}, error) {
+func (a *Authenticator) verifyJwt(raw string) (*ProxyClaims, error) {
+	token, err := jwt.ParseWithClaims(raw, &ProxyClaims{}, func(_ *jwt.Token) (interface{}, error) {
 		return a.jwtSecretKey, nil
 	})
 	if err != nil {
@@ -33,7 +56,7 @@ func (a *Authenticator) verifyJwt(raw string) (*jwt.StandardClaims, error) {
 		return nil, fmt.Errorf("invalid token")
 	}
 
-	c, ok := token.Claims.(*jwt.StandardClaims)
+	c, ok := token.Claims.(*ProxyClaims)
 	if !ok {
 		return nil, fmt.Errorf("invalid claims")
 	}
