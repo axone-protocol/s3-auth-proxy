@@ -11,7 +11,7 @@
     "credentialSubject": {
         "id": "did:key:zQ3shuJ8dEheKxgedw1ZQvP1PHthG2vokpCTdqggHvBxZ55Bz",
         "hasExecutionOrder": {
-            "id": "did:key:zQ3shaunKKxQKVQxRG6P69ER8h88cRuXkSA73jbhiEG5hfQ4m",
+            "id": "order:528a0693-2fc1-4831-9366-0332f42c84ed",
             "inZone": "did:key:zQ3shsLQeHXRgYHrRyTv9BhPLfgxHis8VowebBK2JMtMo8wzQ"
         }
     },
