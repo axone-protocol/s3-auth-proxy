@@ -51,7 +51,7 @@ func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc st
 				Prefix:    "exec",
 				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/orchestration-service/execution/",
 			}},
-			Select: []SelectItem{{Variable: "zone"}, {Variable: "status"}, {Variable: "resource"}},
+			Select: []SelectItem{{Variable: "zone"}, {Variable: "execution"}, {Variable: "status"}},
 			Where: []WhereCondition{
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
@@ -112,6 +112,13 @@ func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc st
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
 						Subject:   VarOrNode{Variable: "execCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#issuer"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execSvc}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execCred"},
 						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#claim"}},
 						Object:    VarOrNodeOrLiteral{Variable: "execClaim"},
 					}},
@@ -119,27 +126,112 @@ func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc st
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
 						Subject:   VarOrNode{Variable: "execClaim"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasExecution"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execNode"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execNode"},
 						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:executionOf"}},
 						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: order}}},
 					}},
 				},
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
-						Subject:   VarOrNode{Variable: "execClaim"},
+						Subject:   VarOrNode{Variable: "execNode"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:claim#original-node"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execution"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execNode"},
 						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasExecutionStatus"}},
 						Object:    VarOrNodeOrLiteral{Variable: "status"},
 					}},
 				},
+			},
+			Limit: 30,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.Results.Bindings) == 0 {
+		return nil, fmt.Errorf("could not find executions related to order")
+	}
+
+	zones, err := resp.GetVariableValues("zone", nil)
+	if err != nil {
+		return nil, err
+	}
+	if len(zones) != 1 {
+		return nil, fmt.Errorf("could not find zone related to order")
+	}
+	executionIDs, err := resp.GetVariableValues("execution", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	executions := make(map[string][]string, len(executionIDs))
+	for _, exec := range executionIDs {
+		statuses, err := resp.GetVariableValues("status", map[string]string{
+			"execution": exec,
+		})
+		if err != nil {
+			return nil, err
+		}
+		executions[exec] = statuses
+	}
+
+	return &ExecutionOrderContext{
+		Zone:       zones[0],
+		Executions: executions,
+	}, nil
+}
+
+func (c *Client) GetExecutionConsumedResources(ctx context.Context, order, execution string) ([]string, error) {
+	resp, err := c.queryCognitariumSelect(ctx, Select{
+		Query: SelectQuery{
+			Prefixes: []Prefix{{
+				Prefix:    "exec",
+				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/orchestration-service/execution/",
+			}},
+			Select: []SelectItem{{Variable: "resource"}},
+			Where: []WhereCondition{
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
-						Subject:   VarOrNode{Variable: "execClaim"},
-						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasExecution"}},
-						Object:    VarOrNodeOrLiteral{Variable: "exec"},
+						Subject:   VarOrNode{Variable: "execCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#claim"}},
+						Object:    VarOrNodeOrLiteral{Variable: "claim"},
 					}},
 				},
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
-						Subject:   VarOrNode{Variable: "exec"},
+						Subject:   VarOrNode{Variable: "claim"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasExecution"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execution"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execution"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:claim#original-node"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execution}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execution"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:executionOf"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: order}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execution"},
 						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasConsumedResource"}},
 						Object:    VarOrNodeOrLiteral{Variable: "resource"},
 					}},
@@ -152,28 +244,7 @@ func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc st
 		return nil, err
 	}
 
-	zones, err := resp.GetVariableValues("zone")
-	if err != nil {
-		return nil, err
-	}
-	if len(zones) != 1 {
-		return nil, fmt.Errorf("zone not found")
-	}
-
-	statuses, err := resp.GetVariableValues("status")
-	if err != nil {
-		return nil, err
-	}
-	resources, err := resp.GetVariableValues("resource")
-	if err != nil {
-		return nil, err
-	}
-
-	return &ExecutionOrderContext{
-		Zone:      zones[0],
-		Statuses:  statuses,
-		Resources: resources,
-	}, nil
+	return resp.GetVariableValues("resource", nil)
 }
 
 func (c *Client) GetResourcePublication(ctx context.Context, resource, servedBy string) (*string, error) {
@@ -183,7 +254,7 @@ func (c *Client) GetResourcePublication(ctx context.Context, resource, servedBy 
 				Prefix:    "pub",
 				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/digital-resource/publication/",
 			}},
-			Select: []SelectItem{{Variable: "url"}},
+			Select: []SelectItem{{Variable: "uri"}},
 			Where: []WhereCondition{
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
@@ -217,7 +288,7 @@ func (c *Client) GetResourcePublication(ctx context.Context, resource, servedBy 
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
 						Subject:   VarOrNode{Variable: "claim"},
 						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "pub:hasIdentifier"}},
-						Object:    VarOrNodeOrLiteral{Variable: "url"},
+						Object:    VarOrNodeOrLiteral{Variable: "uri"},
 					}},
 				},
 			},
@@ -228,15 +299,15 @@ func (c *Client) GetResourcePublication(ctx context.Context, resource, servedBy 
 		return nil, err
 	}
 
-	url, err := resp.GetVariableValues("url")
+	uri, err := resp.GetVariableValues("uri", nil)
 	if err != nil {
 		return nil, err
 	}
-	if len(url) == 0 {
+	if len(uri) == 0 {
 		return nil, fmt.Errorf("publication not found")
 	}
 
-	return &url[0], nil
+	return &uri[0], nil
 }
 
 func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (string, error) {

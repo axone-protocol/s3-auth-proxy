@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"github.com/valyala/fasthttp"
 
@@ -40,11 +41,25 @@ func (a *Authenticator) Authenticate(ctx context.Context, raw []byte) (string, e
 		return "", fmt.Errorf("couldn't fetch execution order context: %w", err)
 	}
 
-	if !execCtx.IsInProgress() {
+	executions := execCtx.ExecutionsInProgress()
+	if len(executions) == 0 {
 		return "", fmt.Errorf("execution order not in progress")
 	}
 
-	if !execCtx.HasResource(a.serviceID) {
+	var resources []string
+	for _, exec := range executions {
+		consumed, err := a.dataverseClient.GetExecutionConsumedResources(ctx, claim.ForOrder, exec)
+		if err != nil {
+			return "", fmt.Errorf("couldn't fetch execution consumed resources: %w", err)
+		}
+
+		if !slices.Contains(consumed, a.serviceID) {
+			continue
+		}
+		resources = append(resources, consumed...)
+	}
+
+	if len(resources) == 0 {
 		return "", fmt.Errorf("not concerned by this execution order")
 	}
 
@@ -57,7 +72,7 @@ func (a *Authenticator) Authenticate(ctx context.Context, raw []byte) (string, e
 	}
 
 	resourcePublications := make([]string, 0)
-	for _, r := range execCtx.Resources {
+	for _, r := range resources {
 		if r == a.serviceID {
 			continue
 		}

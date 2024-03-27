@@ -8,28 +8,28 @@ type GovernanceExecAnswer struct {
 }
 
 type ExecutionOrderContext struct {
-	Zone      string
-	Statuses  []string
-	Resources []string
+	Zone string
+
+	/// Executions contains for each execution id related to the order, the linked statuses.
+	Executions map[string][]string
 }
 
-func (e *ExecutionOrderContext) IsInProgress() bool {
-	inProgress := false
-	for _, status := range e.Statuses {
-		if strings.HasSuffix(status, "Cancelled") || strings.HasSuffix(status, "Delivered") || strings.HasSuffix(status, "Failed") {
-			return false
+func (e *ExecutionOrderContext) ExecutionsInProgress() []string {
+	var results []string
+	for exec, statuses := range e.Executions {
+		inProgress := false
+		for _, status := range statuses {
+			if strings.HasSuffix(status, "Cancelled") || strings.HasSuffix(status, "Delivered") || strings.HasSuffix(status, "Failed") {
+				inProgress = false
+				break
+			}
+			inProgress = strings.HasSuffix(status, "InExecution")
 		}
-		inProgress = strings.HasSuffix(status, "InExecution")
-	}
 
-	return inProgress
-}
-
-func (e *ExecutionOrderContext) HasResource(resource string) bool {
-	for _, r := range e.Resources {
-		if r == resource {
-			return true
+		if inProgress {
+			results = append(results, exec)
 		}
 	}
-	return false
+
+	return results
 }
