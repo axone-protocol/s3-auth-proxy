@@ -12,7 +12,7 @@
         "id": "did:key:zQ3shZMjdHEgK4L6smyRz2vzSazkZDKwvvKPTjMFN4QH3d7Jd",
         "isGovernedBy": {
             "type": "GovernanceText",
-            "fromGovernance": "cosmwasm:law-stone:okp4182nff4ttmvshn6yjlqj5czapfcav9434l2qzz8aahf5pxnyd33ts6jynpl?query=%22program_code%22"
+            "fromGovernance": "cosmwasm:law-stone:${LAW_STONE_ADDRESS}?query=%22program_code%22"
         }
     },
     "issuanceDate": "2024-02-06T13:29:00.475304+01:00",

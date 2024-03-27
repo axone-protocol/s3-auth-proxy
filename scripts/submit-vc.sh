@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -eu
+set -euo pipefail
 
 if [ $# != 4 ]; then
     echo "Usage: $0 [vc_file] [signer] [sender_addr] [dataverse_addr]"
@@ -18,7 +18,13 @@ okp4d --keyring-backend test --keyring-dir ${BASEDIR}/../example credential sign
 jsonld toRdf -q ${BASEDIR}/tmp/vc-signed.jsonld > ${BASEDIR}/tmp/vc.nq
 
 # Submit the VC to the dataverse
-okp4d tx wasm execute --from $3 $4 --gas 20000000000 \
-    "{\"submit_claims\":{\"metadata\":\"$(cat ${BASEDIR}/tmp/vc.nq | base64)\"}}"
+TX_HASH=$(okp4d tx wasm execute --from $3 $4 --gas 20000000000 --yes -ojson \
+    "{\"submit_claims\":{\"metadata\":\"$(cat ${BASEDIR}/tmp/vc.nq | base64)\"}}" \
+    | jq -r '.txhash')
 
-rm -rf tmp
+# Wait for the tx to pass
+okp4d query event-query-tx-for $TX_HASH > /dev/null || true
+
+echo "Submitted claim '$1', tx: '$TX_HASH'"
+
+rm -rf ${BASEDIR}/tmp
