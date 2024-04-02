@@ -34,13 +34,14 @@ We'll see how we can submit an execution order to set the file accessible throug
 ### Prerequistes
 
 Some tools are needed in order to run the example:
+
 - [docker](https://docs.docker.com/engine/install/)
 - [okp4d](https://github.com/okp4/okp4d)
 - [jsonld](https://github.com/digitalbazaar/jsonld-cli)
 
 The local chain must be running with our [contracts](https://github.com/okp4/contracts) stored.
 
-The local configuration of `okp4d` in `$OKP4D_HOME/config/client.toml` shall be self-sufficient to sign and broadcast transaction without additional command flags (e.g. `--chain-id`, `--keyring-backend`, etc..) 
+The local configuration of `okp4d` in `$OKP4D_HOME/config/client.toml` shall be self-sufficient to sign and broadcast transaction without additional command flags (e.g. `--chain-id`, `--keyring-backend`, etc..)
 
 ### Steps
 
@@ -90,6 +91,7 @@ okp4d tx wasm instantiate $DATAVERSE_CODE_ID \
 #### Declare resources
 
 Now let's declare the storage service and the dataset in the dataverse: we'll have for each one two verifiable credentials, one for the description and one referencing the governance. Then, another one will be needed to express that the dataset is served by our minio storage service, providing its protected proxy URL. Those verifiable credentials are available here:
+
 - [example/vc-s3-desc.jsonld]
 - [example/vc-s3-gov.jsonld]
 - [example/vc-data-desc.jsonld]
@@ -102,6 +104,7 @@ Those VCs are not signed. For that we'll need to have some cryptographic keys to
 You can list the keys with `okp4d --keyring-backend test --keyring-dir example keys list` if needed.
 
 To sign and submit the verifiable credentials we have a simple script that you can use:
+
 ```bash
 ./scripts/setup.sh $MY_WALLET_ADDR $DATAVERSE_ADDR
 ```
@@ -110,11 +113,13 @@ To sign and submit the verifiable credentials we have a simple script that you c
 
 Here we need to run the minio and deploy our dataset on it. For that, we provide a [docker-compose.yml]: it will run a MinIO instance accessible at `http://localhost:9000`.For demonstration purposes, this setup will make the `README` file of this project available as part of the dataset at `http://localhost:9000/test/README.md`.
 You can start the compose with:
+
 ```bash
 docker compose up
 ```
 
 Now we'll run the proxy through which we'll connect to the dataverse with:
+
 ```bash
 ./target/dist/s3-auth-proxy start --listen-addr 0.0.0.0:8080 \
     --jwt-secret-key 1d5be173d43385b984ef8c73fe4fb9e5ca5a31466f20bf8a250d06eec5f3079b \
@@ -132,6 +137,7 @@ Now we'll run the proxy through which we'll connect to the dataverse with:
 For this step, we'll act ourselves as the initiator of the execution order, and the orchestration service that'll fulfill the order, to demonstrate the interactions with the proxy.
 
 Let's create the execution order, and the execution containing the status and the parameters:
+
 ```bash
 ./scripts/order-exec.sh $MY_WALLET_ADDR $DATAVERSE_ADDR
 ```
@@ -139,16 +145,19 @@ Let's create the execution order, and the execution containing the status and th
 #### Access the dataset
 
 At this point, submitting an authentication verifiable credential signed with the orchestration service keys we should be able to access the dataset, let's forge this credential:
+
 ```bash
 ./scripts/issue-auth-cred.sh > vc-auth.jsonld
 ```
 
 And then issue an authentication request to obtain an access token:
+
 ```bash
 curl -s -X POST -T ./vc-auth.jsonld http://localhost:8080/auth
 ```
 
 Now we should be able to get through the proxy authorization layer with our access token:
+
 ```bash
 curl -s -H "Authorization: Bearer $TOKEN" http://localhost:8080/test/README.md
 ```
@@ -156,6 +165,7 @@ curl -s -H "Authorization: Bearer $TOKEN" http://localhost:8080/test/README.md
 #### Terminate the execution
 
 We just need to submit a credential expressing an execution status of delivered:
+
 ```bash
 ./scripts/end-exec.sh $MY_WALLET_ADDR $DATAVERSE_ADDR
 ```
