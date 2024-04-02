@@ -36,7 +36,7 @@ func (a *Authenticator) issueJwt(authenticatedSvc string, readURIs []string) (st
 			IssuedAt:  now.Unix(),
 			Issuer:    a.serviceID,
 			NotBefore: now.Unix(),
-			Subject:   a.serviceID,
+			Subject:   authenticatedSvc,
 		},
 		Can: Permissions{
 			Read: readURIs,
