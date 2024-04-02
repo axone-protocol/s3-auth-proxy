@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"slices"
 
 	"github.com/valyala/fasthttp"
@@ -105,7 +106,10 @@ func (a *Authenticator) Authorize(token string, uri *fasthttp.URI) (*ProxyClaims
 		return nil, err
 	}
 
-	if !claims.CanRead(uri.String()) {
+	if !claims.CanRead(func(raw string) bool {
+		parsedURI, err := url.Parse(raw)
+		return err != nil && parsedURI.Host == string(uri.Host()) && parsedURI.Path == string(uri.Path())
+	}) {
 		return claims, fmt.Errorf("access to requested resource unauthorized")
 	}
 	return claims, nil

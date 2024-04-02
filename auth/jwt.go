@@ -17,9 +17,9 @@ type Permissions struct {
 	Read []string `json:"read"`
 }
 
-func (c *ProxyClaims) CanRead(uri string) bool {
+func (c *ProxyClaims) CanRead(canFn func(uri string) bool) bool {
 	for _, u := range c.Can.Read {
-		if u == uri {
+		if canFn(u) {
 			return true
 		}
 	}
