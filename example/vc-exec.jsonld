@@ -14,8 +14,8 @@
             "id": "exec:c13793dd-bae8-42ec-887e-df11c6a28b64",
             "executionOf": "order:528a0693-2fc1-4831-9366-0332f42c84ed",
             "hasConsumedResource": [
-                "did:key:zQ3shbn6v6Mwtc6nSe5LnBmBY44seFqdRKXtf5eH8tQknZCcw",
-                "did:key:zQ3shZMjdHEgK4L6smyRz2vzSazkZDKwvvKPTjMFN4QH3d7Jd"
+                "did:key:zQ3shdb4RBCdrvjouVdoJTjkpyi9XJcSVzvgVk9ETGjv241AY",
+                "did:key:zQ3shcUrCbUrvVH4BYa42vrqzChyRLVL6xSX3dx2x2Cvj27Y4"
             ],
             "hasExecutionStatus": "https://w3id.org/okp4/ontology/vnext/thesaurus/digital-service-execution-status/InExecution"
         }

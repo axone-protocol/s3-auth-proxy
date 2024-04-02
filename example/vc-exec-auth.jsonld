@@ -11,7 +11,7 @@
     "credentialSubject": {
         "id": "did:key:zQ3shuJ8dEheKxgedw1ZQvP1PHthG2vokpCTdqggHvBxZ55Bz",
         "forOrder": "order:528a0693-2fc1-4831-9366-0332f42c84ed",
-        "toService": "did:key:zQ3shbn6v6Mwtc6nSe5LnBmBY44seFqdRKXtf5eH8tQknZCcw"
+        "toService": "did:key:zQ3shdb4RBCdrvjouVdoJTjkpyi9XJcSVzvgVk9ETGjv241AY"
     },
     "issuer": "did:key:zQ3shuJ8dEheKxgedw1ZQvP1PHthG2vokpCTdqggHvBxZ55Bz"
 }

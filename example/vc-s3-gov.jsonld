@@ -9,12 +9,12 @@
     ],
     "id": "https://w3id.org/okp4/ontology/vnext/schema/credential/governance/text/c29835be-9d4c-4a9a-8525-145bc85b6f95",
     "credentialSubject": {
-        "id": "did:key:zQ3shbn6v6Mwtc6nSe5LnBmBY44seFqdRKXtf5eH8tQknZCcw",
+        "id": "did:key:zQ3shdb4RBCdrvjouVdoJTjkpyi9XJcSVzvgVk9ETGjv241AY",
         "isGovernedBy": {
             "type": "GovernanceText",
             "fromGovernance": "cosmwasm:law-stone:${LAW_STONE_ADDRESS}?query=%22program_code%22"
         }
     },
     "issuanceDate": "2024-02-06T13:29:00.475304+01:00",
-    "issuer": "did:key:zQ3shbn6v6Mwtc6nSe5LnBmBY44seFqdRKXtf5eH8tQknZCcw"
+    "issuer": "did:key:zQ3shdb4RBCdrvjouVdoJTjkpyi9XJcSVzvgVk9ETGjv241AY"
 }
