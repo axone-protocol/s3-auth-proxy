@@ -48,7 +48,7 @@ func makeProxyHandler(s3Client *minio.Client, authenticator *auth.Authenticator)
 			return
 		}
 
-		claims, err := authenticator.Authorize(authHeader[7:])
+		claims, err := authenticator.Authorize(authHeader[7:], ctx.Request.URI())
 		if err != nil {
 			ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
 			ctx.Response.SetBody([]byte(err.Error()))

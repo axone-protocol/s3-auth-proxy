@@ -1,0 +1,24 @@
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://w3id.org/okp4/ontology/vnext/schema/credential/dataset/description/"
+    ],
+    "type": [
+        "VerifiableCredential",
+        "DatasetDescriptionCredential"
+    ],
+    "id": "https://w3id.org/okp4/ontology/vnext/schema/credential/dataset/description/d1120529-3242-4fa8-ac7c-a99abc3fc73e",
+    "credentialSubject": {
+        "id": "did:key:zQ3shcUrCbUrvVH4BYa42vrqzChyRLVL6xSX3dx2x2Cvj27Y4",
+        "hasDescription": "This dataset contains the readme of the s3 auth proxy as testing data.",
+        "hasFormat": "https://w3id.org/okp4/ontology/vnext/thesaurus/media-type/text_plain",
+        "hasTag": [
+            "Test"
+        ],
+        "hasTemporalCoverage": "2020-01-01T00:00:00.0000+01:00/2024-02-02T00:00:00.00000+01:00",
+        "hasTitle": "The readme of the s3 auth proxy",
+        "hasTopic": "https://w3id.org/okp4/ontology/vnext/thesaurus/topic/Other"
+    },
+    "issuanceDate": "2024-02-02T09:45:43.475304+01:00",
+    "issuer": "did:key:zQ3shZMjdHEgK4L6smyRz2vzSazkZDKwvvKPTjMFN4QH3d7Jd"
+}

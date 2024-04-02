@@ -1,5 +1,11 @@
 package dataverse
 
+import (
+	"fmt"
+
+	"github.com/mitchellh/mapstructure"
+)
+
 type Select struct {
 	Query SelectQuery `json:"query"`
 }
@@ -16,13 +22,15 @@ type SelectResponse struct {
 		Vars []string `json:"vars"`
 	} `json:"head"`
 	Results struct {
-		Bindings []map[string]struct {
-			Type     string      `json:"type"`
-			Value    interface{} `json:"value"`
-			Lang     *string     `json:"xml:lang,omitempty"`
-			Datatype *IRI        `json:"datatype,omitempty"`
-		} `json:"bindings"`
+		Bindings []Binding `json:"bindings"`
 	} `json:"results"`
+}
+
+type Binding map[string]struct {
+	Type     string      `json:"type"`
+	Value    interface{} `json:"value"`
+	Lang     *string     `json:"xml:lang,omitempty"`
+	Datatype *IRI        `json:"datatype,omitempty"`
 }
 
 type Prefix struct {
@@ -84,4 +92,75 @@ type Literal struct {
 		Value    string `json:"value"`
 		Datatype IRI    `json:"datatype"`
 	} `json:"typed_value,omitempty"`
+}
+
+func (r *SelectResponse) GetVariableValues(name string, filters map[string]string) ([]string, error) {
+	filterFn := func(binding Binding) (bool, error) {
+		for n, v := range filters {
+			val, err := binding.ResolveValue(n)
+			if err != nil {
+				return false, err
+			}
+
+			if *val != v {
+				return false, nil
+			}
+		}
+
+		return true, nil
+	}
+
+	valuesMap := make(map[string]interface{})
+	for _, binding := range r.Results.Bindings {
+		match, err := filterFn(binding)
+		if err != nil {
+			return nil, err
+		}
+
+		if !match {
+			continue
+		}
+
+		val, err := binding.ResolveValue(name)
+		if err != nil {
+			return nil, err
+		}
+		valuesMap[*val] = nil
+	}
+
+	values := make([]string, 0, len(valuesMap))
+	for v := range valuesMap {
+		values = append(values, v)
+	}
+
+	return values, nil
+}
+
+func (b Binding) ResolveValue(name string) (*string, error) {
+	val, ok := b[name]
+	if !ok {
+		return nil, fmt.Errorf("unbound variable: %s", name)
+	}
+
+	switch val.Type {
+	case "uri":
+		valIRI, ok := val.Value.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("could not decode binding value")
+		}
+
+		var iri IRI
+		if err := mapstructure.Decode(valIRI, &iri); err != nil {
+			return nil, fmt.Errorf("could not decode binding iri value: %w", err)
+		}
+		return &iri.Full, nil
+	case "literal":
+		valStr, ok := val.Value.(string)
+		if !ok {
+			return nil, fmt.Errorf("could not decode binding value")
+		}
+		return &valStr, nil
+	}
+
+	return nil, fmt.Errorf("unsupported variable value type")
 }

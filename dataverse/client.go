@@ -41,32 +41,169 @@ func NewClient(ctx context.Context, nodeGrpc, dataverseAddr string, transportCre
 	}, nil
 }
 
-func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc string) (string, error) {
+func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc string) (*ExecutionOrderContext, error) {
 	resp, err := c.queryCognitariumSelect(ctx, Select{
 		Query: SelectQuery{
 			Prefixes: []Prefix{{
+				Prefix:    "order",
+				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/orchestration-service/execution-order/",
+			}, {
 				Prefix:    "exec",
-				Namespace: "https://w3id.org/okp4/ontology/v3/schema/credential/digital-service/execution-order/",
+				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/orchestration-service/execution/",
 			}},
-			Select: []SelectItem{{Variable: "zone"}},
+			Select: []SelectItem{{Variable: "zone"}, {Variable: "execution"}, {Variable: "status"}},
 			Where: []WhereCondition{
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
-						Subject:   VarOrNode{Variable: "credId"},
+						Subject:   VarOrNode{Variable: "orderCred"},
 						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#subject"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execSvc}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "orderCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#type"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Prefixed: "order:OrchestrationServiceExecutionOrderCredential"}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "orderCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#claim"}},
+						Object:    VarOrNodeOrLiteral{Variable: "orderClaim"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "orderClaim"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "order:hasExecutionOrder"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execOrder"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execOrder"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:claim#original-node"}},
 						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: order}}},
 					}},
 				},
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
-						Subject:   VarOrNode{Variable: "credId"},
-						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#type"}},
-						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Prefixed: "exec:DigitalServiceExecutionOrderCredential"}}},
+						Subject:   VarOrNode{Variable: "execOrder"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "order:inZone"}},
+						Object:    VarOrNodeOrLiteral{Variable: "zone"},
 					}},
 				},
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
-						Subject:   VarOrNode{Variable: "credId"},
+						Subject:   VarOrNode{Variable: "execCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#subject"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execSvc}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#type"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Prefixed: "exec:OrchestrationServiceExecutionCredential"}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#issuer"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execSvc}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execCred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#claim"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execClaim"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execClaim"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasExecution"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execNode"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execNode"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:executionOf"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: order}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execNode"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:claim#original-node"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execution"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execNode"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasExecutionStatus"}},
+						Object:    VarOrNodeOrLiteral{Variable: "status"},
+					}},
+				},
+			},
+			Limit: 30,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.Results.Bindings) == 0 {
+		return nil, fmt.Errorf("could not find executions related to order")
+	}
+
+	zones, err := resp.GetVariableValues("zone", nil)
+	if err != nil {
+		return nil, err
+	}
+	if len(zones) != 1 {
+		return nil, fmt.Errorf("could not find zone related to order")
+	}
+	executionIDs, err := resp.GetVariableValues("execution", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	executions := make(map[string][]string, len(executionIDs))
+	for _, exec := range executionIDs {
+		statuses, err := resp.GetVariableValues("status", map[string]string{
+			"execution": exec,
+		})
+		if err != nil {
+			return nil, err
+		}
+		executions[exec] = statuses
+	}
+
+	return &ExecutionOrderContext{
+		Zone:       zones[0],
+		Executions: executions,
+	}, nil
+}
+
+func (c *Client) GetExecutionConsumedResources(ctx context.Context, order, execution string) ([]string, error) {
+	resp, err := c.queryCognitariumSelect(ctx, Select{
+		Query: SelectQuery{
+			Prefixes: []Prefix{{
+				Prefix:    "exec",
+				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/orchestration-service/execution/",
+			}},
+			Select: []SelectItem{{Variable: "resource"}},
+			Where: []WhereCondition{
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execCred"},
 						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#claim"}},
 						Object:    VarOrNodeOrLiteral{Variable: "claim"},
 					}},
@@ -74,15 +211,84 @@ func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc st
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
 						Subject:   VarOrNode{Variable: "claim"},
-						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:executedBy"}},
-						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execSvc}}},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasExecution"}},
+						Object:    VarOrNodeOrLiteral{Variable: "execution"},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execution"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:claim#original-node"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: execution}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execution"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:executionOf"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: order}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "execution"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:hasConsumedResource"}},
+						Object:    VarOrNodeOrLiteral{Variable: "resource"},
+					}},
+				},
+			},
+			Limit: 30,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetVariableValues("resource", nil)
+}
+
+func (c *Client) GetResourcePublication(ctx context.Context, resource, servedBy string) (*string, error) {
+	resp, err := c.queryCognitariumSelect(ctx, Select{
+		Query: SelectQuery{
+			Prefixes: []Prefix{{
+				Prefix:    "pub",
+				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/digital-resource/publication/",
+			}},
+			Select: []SelectItem{{Variable: "uri"}},
+			Where: []WhereCondition{
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "cred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#subject"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: resource}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "cred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#type"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Prefixed: "pub:DigitalResourcePublicationCredential"}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "cred"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Full: "dataverse:credential#claim"}},
+						Object:    VarOrNodeOrLiteral{Variable: "claim"},
 					}},
 				},
 				{
 					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
 						Subject:   VarOrNode{Variable: "claim"},
-						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "exec:inZone"}},
-						Object:    VarOrNodeOrLiteral{Variable: "zone"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "pub:servedBy"}},
+						Object:    VarOrNodeOrLiteral{Node: &Node{NamedNode: &IRI{Full: servedBy}}},
+					}},
+				},
+				{
+					Simple: SimpleWhereCondition{TriplePattern: TriplePattern{
+						Subject:   VarOrNode{Variable: "claim"},
+						Predicate: VarOrNamedNode{NamedNode: &IRI{Prefixed: "pub:hasIdentifier"}},
+						Object:    VarOrNodeOrLiteral{Variable: "uri"},
 					}},
 				},
 			},
@@ -90,32 +296,18 @@ func (c *Client) GetExecutionOrderContext(ctx context.Context, order, execSvc st
 		},
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	if len(resp.Results.Bindings) != 1 {
-		return "", fmt.Errorf("could not find order")
+	uri, err := resp.GetVariableValues("uri", nil)
+	if err != nil {
+		return nil, err
+	}
+	if len(uri) == 0 {
+		return nil, fmt.Errorf("publication not found")
 	}
 
-	zoneBinding, ok := resp.Results.Bindings[0]["zone"]
-	if !ok {
-		return "", fmt.Errorf("could not find order zone")
-	}
-	if zoneBinding.Type != "uri" {
-		return "", fmt.Errorf("could not find order zone")
-	}
-
-	zoneIRI, ok := zoneBinding.Value.(map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("could not decode order select")
-	}
-
-	var iri IRI
-	if err := mapstructure.Decode(zoneIRI, &iri); err != nil {
-		return "", fmt.Errorf("could not decode order select: %w", err)
-	}
-
-	return iri.Full, nil
+	return &uri[0], nil
 }
 
 func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (string, error) {
@@ -123,7 +315,7 @@ func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (strin
 		Query: SelectQuery{
 			Prefixes: []Prefix{{
 				Prefix:    "gov",
-				Namespace: "https://w3id.org/okp4/ontology/v3/schema/credential/governance/text/",
+				Namespace: "https://w3id.org/okp4/ontology/vnext/schema/credential/governance/text/",
 			}},
 			Select: []SelectItem{{Variable: "code"}},
 			Where: []WhereCondition{
@@ -195,10 +387,7 @@ func (c *Client) GetResourceGovCode(ctx context.Context, resource string) (strin
 	return iri.Full, nil
 }
 
-func (c *Client) ExecGovernance(ctx context.Context, govCode, action, subject, zone string) (*struct {
-	Result   string
-	Evidence string
-}, error,
+func (c *Client) ExecGovernance(ctx context.Context, govCode, action, subject, zone string) (*GovernanceExecAnswer, error,
 ) {
 	program, err := makeGovCheckProgram(govCode, action, subject, zone)
 	if err != nil {
@@ -232,10 +421,7 @@ func (c *Client) ExecGovernance(ctx context.Context, govCode, action, subject, z
 		return nil, fmt.Errorf("couldn't resolve variables")
 	}
 
-	return &struct {
-		Result   string
-		Evidence string
-	}{Result: *result, Evidence: *evidence}, nil
+	return &GovernanceExecAnswer{Result: *result, Evidence: *evidence}, nil
 }
 
 func queryCognitariumAddr(ctx context.Context, dataverseAddr string, wasmClient wasmtypes.QueryClient) (string, error) {

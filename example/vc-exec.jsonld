@@ -1,0 +1,25 @@
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://w3id.org/okp4/ontology/vnext/schema/credential/orchestration-service/execution/"
+    ],
+    "type": [
+        "VerifiableCredential",
+        "OrchestrationServiceExecutionCredential"
+    ],
+    "id": "https://w3id.org/okp4/ontology/vnext/schema/credential/orchestration-service/execution/c29835be-9d4c-4a9a-8525-145bc85b6f95",
+    "credentialSubject": {
+        "id": "did:key:zQ3shuJ8dEheKxgedw1ZQvP1PHthG2vokpCTdqggHvBxZ55Bz",
+        "hasExecution": {
+            "id": "exec:c13793dd-bae8-42ec-887e-df11c6a28b64",
+            "executionOf": "order:528a0693-2fc1-4831-9366-0332f42c84ed",
+            "hasConsumedResource": [
+                "did:key:zQ3shdb4RBCdrvjouVdoJTjkpyi9XJcSVzvgVk9ETGjv241AY",
+                "did:key:zQ3shcUrCbUrvVH4BYa42vrqzChyRLVL6xSX3dx2x2Cvj27Y4"
+            ],
+            "hasExecutionStatus": "https://w3id.org/okp4/ontology/vnext/thesaurus/digital-service-execution-status/InExecution"
+        }
+    },
+    "issuanceDate": "2024-02-06T13:29:00.475304+01:00",
+    "issuer": "did:key:zQ3shuJ8dEheKxgedw1ZQvP1PHthG2vokpCTdqggHvBxZ55Bz"
+}
