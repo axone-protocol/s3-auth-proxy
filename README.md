@@ -92,15 +92,15 @@ okp4d tx wasm instantiate $DATAVERSE_CODE_ID \
 
 Now let's declare the storage service and the dataset in the dataverse: we'll have for each one two verifiable credentials, one for the description and one referencing the governance. Then, another one will be needed to express that the dataset is served by our minio storage service, providing its protected proxy URL. Those verifiable credentials are available here:
 
-- [example/vc-s3-desc.jsonld]
-- [example/vc-s3-gov.jsonld]
-- [example/vc-data-desc.jsonld]
-- [example/vc-data-gov.jsonld]
-- [example/vc-publish.jsonld]
+- [example/vc-s3-desc.jsonld](example/vc-s3-desc.jsonld)
+- [example/vc-s3-gov.jsonld](example/vc-s3-gov.jsonld)
+- [example/vc-data-desc.jsonld](example/vc-data-desc.jsonld)
+- [example/vc-data-gov.jsonld](example/vc-data-gov.jsonld)
+- [example/vc-publish.jsonld](example/vc-publish.jsonld)
 
-Before submitting them we need to update the law stone addresses related to the governances in the [example/vc-s3-gov.jsonld] and [example/vc-data-gov.jsonld] credentials.
+Before submitting them we need to update the law stone addresses related to the governances in the [example/vc-s3-gov.jsonld](example/vc-s3-gov.jsonld) and [example/vc-data-gov.jsonld](example/vc-data-gov.jsonld) credentials.
 
-Those VCs are not signed. For that we'll need to have some cryptographic keys to act as the issuers of those verifiable credentials. To facilitate this, we provide a keyring located at [example/keyring-test].
+Those VCs are not signed. For that we'll need to have some cryptographic keys to act as the issuers of those verifiable credentials. To facilitate this, we provide a keyring located at [example/keyring-test](example/keyring-test).
 You can list the keys with `okp4d --keyring-backend test --keyring-dir example keys list` if needed.
 
 To sign and submit the verifiable credentials we have a simple script that you can use:
@@ -111,7 +111,7 @@ To sign and submit the verifiable credentials we have a simple script that you c
 
 #### Run the infrastructure
 
-Here we need to run the minio and deploy our dataset on it. For that, we provide a [docker-compose.yml]: it will run a MinIO instance accessible at `http://localhost:9000`.For demonstration purposes, this setup will make the `README` file of this project available as part of the dataset at `http://localhost:9000/test/README.md`.
+Here we need to run the minio and deploy our dataset on it. For that, we provide a [docker-compose.yml](docker-compose.yml): it will run a MinIO instance accessible at `http://localhost:9000`.For demonstration purposes, this setup will make the `README` file of this project available as part of the dataset at `http://localhost:9000/test/README.md`.
 You can start the compose with:
 
 ```bash
