@@ -2,15 +2,18 @@ package cmd
 
 import (
 	"encoding/json"
-	"okp4/s3-auth-proxy/internal/version"
 	"strings"
+
+	"github.com/okp4/s3-auth-proxy/internal/version"
 
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
 
-const flagLong = "long"
-const flagOutput = "output"
+const (
+	flagLong   = "long"
+	flagOutput = "output"
+)
 
 // NewVersionCommand returns a CLI command to interactively print the application binary version information.
 var versionCmd = &cobra.Command{

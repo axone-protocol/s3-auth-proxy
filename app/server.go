@@ -1,7 +1,7 @@
 package app
 
 import (
-	"okp4/s3-auth-proxy/auth"
+	"github.com/okp4/s3-auth-proxy/auth"
 
 	"github.com/fasthttp/router"
 	"github.com/minio/minio-go/v7"

@@ -8,7 +8,7 @@ import (
 
 	"github.com/valyala/fasthttp"
 
-	"okp4/s3-auth-proxy/dataverse"
+	"github.com/okp4/s3-auth-proxy/dataverse"
 
 	"github.com/piprate/json-gold/ld"
 )
