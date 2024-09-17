@@ -10,4 +10,4 @@ fi
 BASEDIR=$(dirname $0)
 
 # Sign the auth credential
-okp4d --keyring-backend test --keyring-dir ${BASEDIR}/../example credential sign --from exec-svc "${BASEDIR}/../example/vc-exec-auth.jsonld"
+axoned --keyring-backend test --keyring-dir ${BASEDIR}/../example credential sign --from exec-svc "${BASEDIR}/../example/vc-exec-auth.jsonld"
