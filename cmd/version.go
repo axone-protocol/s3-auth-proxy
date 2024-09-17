@@ -19,7 +19,7 @@ const (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the application binary version information",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		verInfo := version.NewInfo()
 
 		if long, _ := cmd.Flags().GetBool(flagLong); !long {
