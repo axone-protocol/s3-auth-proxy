@@ -25,6 +25,8 @@ make build
 
 ## Example
 
+> ⚠️ **The following example mey be outdated**.
+
 Hereafter is presented an example using this proxy locally, providing all the needed elements to feed a local dataverse and interact with it.
 
 Through this example, we'll have a [Minio](https://github.com/minio/minio) instance declared as a digital storage service with an attached governance allowing usage in a specific zone. And a dataset representing a single file with a governance allowing the same zone and a specific orchestration service, the dataset will use the minio as storage service.

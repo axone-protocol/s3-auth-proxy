@@ -39,7 +39,6 @@ linters:
     - nilerr
     - nilnil
     - noctx
-    - nolintlint
     - prealloc
     - predeclared
     - promlinter
