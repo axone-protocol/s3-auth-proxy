@@ -7,6 +7,6 @@ if [ $# != 2 ]; then
     exit 1
 fi
 
-BASEDIR=$(dirname $0)
+BASEDIR=$(dirname "$0")
 
-./${BASEDIR}/submit-vc.sh "${BASEDIR}/../example/vc-exec-finished.jsonld" exec-svc $1 $2
+./"${BASEDIR}"/submit-vc.sh "${BASEDIR}/../example/vc-exec-finished.jsonld" exec-svc "$1" "$2"
