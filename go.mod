@@ -1,4 +1,4 @@
-module github.com/okp4/s3-auth-proxy
+module github.com/axone-protocol/s3-auth-proxy
 
 go 1.22.5
 

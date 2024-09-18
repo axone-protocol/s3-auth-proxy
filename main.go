@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/okp4/s3-auth-proxy/cmd"
+	"github.com/axone-protocol/s3-auth-proxy/cmd"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

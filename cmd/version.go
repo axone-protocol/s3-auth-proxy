@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/okp4/s3-auth-proxy/internal/version"
+	"github.com/axone-protocol/s3-auth-proxy/internal/version"
 
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"

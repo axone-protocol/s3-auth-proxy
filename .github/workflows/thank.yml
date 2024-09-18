@@ -1,6 +1,8 @@
 name: Give thanks
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [ main ]
 
@@ -15,7 +17,7 @@ jobs:
 
       - name: Find changed dependencies
         id: changed-dependencies
-        uses: tj-actions/changed-files@v44.0.0
+        uses: tj-actions/changed-files@v44.5.7
         with:
           files: |
             go.mod
@@ -27,4 +29,4 @@ jobs:
             -v $(pwd):/home \
             psampaz/gothanks:v0.4.0 \
             -y \
-            -github-token=${{ secrets.OKP4_TOKEN }}
+            -github-token=${{ secrets.OPS_TOKEN }}
