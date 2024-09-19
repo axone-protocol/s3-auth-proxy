@@ -119,7 +119,7 @@ func init() {
 		"Encryption with the GRPC endpoint but skip certificates verification")
 	startCmd.PersistentFlags().StringVar(&dataverseAddr, FlagDataverseAddr, "", "The dataverse contract address")
 	startCmd.PersistentFlags().StringVar(&mnemonic, FlagServiceMnemonic, "", "The service's mnemonic")
-	startCmd.PersistentFlags().StringVar(&mnemonic, FlagServiceBaseURL, "", "The service's base URL")
+	startCmd.PersistentFlags().StringVar(&baseURL, FlagServiceBaseURL, "", "The service's base URL")
 	startCmd.PersistentFlags().StringVar(&listenAddr, FlagListenAddr, "127.0.0.1:8080", "The server's listen address")
 	startCmd.PersistentFlags().BytesHexVar(&jwtSecretKey, FlagJWTSecretKey, []byte{}, "The hex encoded secret key used to issue JWT tokens")
 	startCmd.PersistentFlags().DurationVar(&jwtDuration, FlagJWTDuration, time.Hour, "The JWT token duration")
