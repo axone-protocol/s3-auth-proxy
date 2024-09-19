@@ -25,7 +25,7 @@ make build
 
 ## Example
 
-> ⚠️ **The following example mey be outdated**.
+> ⚠️ **The following example may be outdated**.
 
 Hereafter is presented an example using this proxy locally, providing all the needed elements to feed a local dataverse and interact with it.
 

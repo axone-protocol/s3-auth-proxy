@@ -3,7 +3,7 @@ module github.com/axone-protocol/s3-auth-proxy
 go 1.22.5
 
 require (
-	github.com/axone-protocol/axone-sdk v0.0.0-20240917124429-be90ef100e39
+	github.com/axone-protocol/axone-sdk v0.0.0-20240919114012-5a4ba90c03e8
 	github.com/minio/minio-go/v7 v7.0.69
 	github.com/piprate/json-gold v0.5.1-0.20230111113000-6ddbe6e6f19f
 	github.com/rs/zerolog v1.33.0
@@ -25,7 +25,7 @@ require (
 	cosmossdk.io/log v1.4.1 // indirect
 	cosmossdk.io/math v1.3.0 // indirect
 	cosmossdk.io/store v1.1.0 // indirect
-	cosmossdk.io/x/tx v0.13.4 // indirect
+	cosmossdk.io/x/tx v0.13.5 // indirect
 	cosmossdk.io/x/upgrade v0.1.4 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
@@ -38,7 +38,7 @@ require (
 	github.com/axone-protocol/axone-contract-schema/go/cognitarium-schema/v5 v5.0.0-20240826124342-6e6abdf73c9a // indirect
 	github.com/axone-protocol/axone-contract-schema/go/dataverse-schema/v5 v5.0.0-20240826124342-6e6abdf73c9a // indirect
 	github.com/axone-protocol/axone-contract-schema/go/law-stone-schema/v5 v5.0.0-20240829161824-0ad316c6fda9 // indirect
-	github.com/axone-protocol/axoned/v9 v9.0.0 // indirect
+	github.com/axone-protocol/axoned/v10 v10.0.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/speakeasy v0.1.1-0.20220910012023-760eaf8b6816 // indirect
