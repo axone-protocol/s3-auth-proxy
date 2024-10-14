@@ -4,7 +4,7 @@ go 1.22.5
 
 require (
 	github.com/axone-protocol/axone-sdk v0.0.0-20240919114012-5a4ba90c03e8
-	github.com/minio/minio-go/v7 v7.0.77
+	github.com/minio/minio-go/v7 v7.0.78
 	github.com/piprate/json-gold v0.5.1-0.20230111113000-6ddbe6e6f19f
 	github.com/rs/zerolog v1.33.0
 	github.com/smartystreets/goconvey v1.8.1
@@ -133,7 +133,7 @@ require (
 	github.com/jmhodges/levigo v1.0.0 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/kilic/bls12-381 v0.1.1-0.20210503002446-7b7597926c69 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -197,13 +197,13 @@ require (
 	github.com/zondax/ledger-go v0.14.3 // indirect
 	go.etcd.io/bbolt v1.3.10 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/crypto v0.28.0 // indirect
 	golang.org/x/exp v0.0.0-20240404231335-c0f41cb1a7a0 // indirect
-	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
-	golang.org/x/term v0.23.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/term v0.25.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
