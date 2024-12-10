@@ -3,7 +3,7 @@ module github.com/axone-protocol/s3-auth-proxy
 go 1.22.5
 
 require (
-	github.com/axone-protocol/axone-sdk v0.0.0-20240919114012-5a4ba90c03e8
+	github.com/axone-protocol/axone-sdk v1.0.0
 	github.com/minio/minio-go/v7 v7.0.81
 	github.com/piprate/json-gold v0.5.1-0.20230111113000-6ddbe6e6f19f
 	github.com/rs/zerolog v1.33.0
@@ -24,7 +24,7 @@ require (
 	cosmossdk.io/errors v1.0.1 // indirect
 	cosmossdk.io/log v1.4.1 // indirect
 	cosmossdk.io/math v1.4.0 // indirect
-	cosmossdk.io/store v1.1.0 // indirect
+	cosmossdk.io/store v1.1.1 // indirect
 	cosmossdk.io/x/tx v0.13.5 // indirect
 	cosmossdk.io/x/upgrade v0.1.4 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
@@ -61,14 +61,14 @@ require (
 	github.com/cosmos/btcutil v1.0.5 // indirect
 	github.com/cosmos/cosmos-db v1.0.2 // indirect
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5 // indirect
-	github.com/cosmos/cosmos-sdk v0.50.9 // indirect
+	github.com/cosmos/cosmos-sdk v0.50.10 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/gogoproto v1.7.0 // indirect
 	github.com/cosmos/iavl v1.2.0 // indirect
 	github.com/cosmos/ibc-go/modules/capability v1.0.1 // indirect
 	github.com/cosmos/ibc-go/v8 v8.4.0 // indirect
-	github.com/cosmos/ics23/go v0.10.0 // indirect
+	github.com/cosmos/ics23/go v0.11.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
