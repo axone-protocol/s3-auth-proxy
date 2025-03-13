@@ -3,7 +3,7 @@ module github.com/axone-protocol/s3-auth-proxy
 go 1.22.5
 
 require (
-	github.com/axone-protocol/axone-sdk v0.0.0-20240919114012-5a4ba90c03e8
+	github.com/axone-protocol/axone-sdk v1.0.0
 	github.com/minio/minio-go/v7 v7.0.88
 	github.com/piprate/json-gold v0.5.1-0.20230111113000-6ddbe6e6f19f
 	github.com/rs/zerolog v1.33.0

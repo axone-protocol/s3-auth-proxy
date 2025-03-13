@@ -4,15 +4,18 @@ import (
 	"context"
 	"crypto/tls"
 	"io"
+	"net/http"
 	"time"
 
-	"github.com/axone-protocol/axone-sdk/http"
-
-	"github.com/piprate/json-gold/ld"
-
 	"github.com/axone-protocol/axone-sdk/dataverse"
+	axonehttp "github.com/axone-protocol/axone-sdk/http"
 	"github.com/axone-protocol/axone-sdk/keys"
 	"github.com/axone-protocol/axone-sdk/provider/storage"
+	"github.com/gorilla/mux"
+	"github.com/piprate/json-gold/ld"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/hlog"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
 	"github.com/minio/minio-go/v7"
@@ -77,7 +80,8 @@ var startCmd = &cobra.Command{
 		ctx, cancelFn := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancelFn()
 
-		dvClient, err := dataverse.NewQueryClient(ctx, nodeGrpcAddr, dataverseAddr, grpc.WithTransportCredentials(getTransportCredentials()))
+		dvClient, err := dataverse.NewQueryClient(
+			ctx, nodeGrpcAddr, dataverseAddr, grpc.WithTransportCredentials(getTransportCredentials()))
 		if err != nil {
 			return err
 		}
@@ -100,11 +104,43 @@ var startCmd = &cobra.Command{
 			return err
 		}
 
-		return http.NewServer(
-			listenAddr,
-			storageProxy.HTTPConfigurator(jwtSecretKey, jwtDuration),
-		).Listen()
+		srv := newHTTPServer(storageProxy)
+
+		log.Logger.Info().Str("addr", listenAddr).Msg("starting server")
+
+		return srv.Listen()
 	},
+}
+
+func newHTTPServer(storageProxy *storage.Proxy) *axonehttp.Server {
+	options := []axonehttp.Option{
+		storageProxy.HTTPConfigurator(jwtSecretKey, jwtDuration),
+		axonehttp.WithRouterOption(func(r *mux.Router) {
+			r.Use(logMiddlewares()...)
+		}),
+	}
+	return axonehttp.NewServer(
+		listenAddr,
+		options...,
+	)
+}
+
+func logMiddlewares() []mux.MiddlewareFunc {
+	return []mux.MiddlewareFunc{
+		hlog.NewHandler(log.Logger),
+		hlog.AccessHandler(func(r *http.Request, status, size int, duration time.Duration) {
+			zerolog.Ctx(r.Context()).
+				Info().
+				Str("client", r.RemoteAddr).
+				Str("method", r.Method).
+				Stringer("path", r.URL).
+				Str("user_agent", r.Header.Get("User-Agent")).
+				Int("status", status).
+				Int("size", size).
+				Dur("duration", duration).
+				Msg("")
+		}),
+	}
 }
 
 // nolint: lll
