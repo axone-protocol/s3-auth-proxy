@@ -66,7 +66,7 @@ var startCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, _ []string) error {
 		s3Client, err := minio.New(s3Endpoint, &minio.Options{
 			Creds:  credentials.NewStaticV4(s3AccessKey, s3SecretKey, ""),
-			Secure: false,
+			Secure: !s3Insecure,
 		})
 		if err != nil {
 			return err
