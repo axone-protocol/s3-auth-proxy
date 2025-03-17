@@ -1,28 +1,23 @@
 run:
   timeout: 10m
+
 linters:
   disable-all: true
   enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - typecheck
-    - unused
     - asciicheck
     - bidichk
     - bodyclose
-    - contextcheck
+    - copyloopvar
     - cyclop
     - dupl
     - durationcheck
+    - errcheck
     - errname
     - errorlint
     - exhaustive
-    - exportloopref
-    - funlen
     - forbidigo
+    - funlen
+    - gci
     - gocognit
     - goconst
     - gocritic
@@ -32,6 +27,9 @@ linters:
     - gomodguard
     - goprintffuncname
     - gosec
+    - gosimple
+    - govet
+    - ineffassign
     - lll
     - makezero
     - nakedret
@@ -39,17 +37,20 @@ linters:
     - nilerr
     - nilnil
     - noctx
+    - nolintlint
     - prealloc
     - predeclared
     - promlinter
     - revive
-    - rowserrcheck
-    - sqlclosecheck
+    - staticcheck
     - stylecheck
-    - tenv
+    - tagliatelle
     - tparallel
+    - typecheck
     - unconvert
     - unparam
+    - unused
+    - usetesting
     - wastedassign
     - whitespace
 
@@ -61,14 +62,16 @@ linters-settings:
     statements: 65
   godot:
     scope: declarations # comments to be checked: `declarations` (default), `toplevel`, or `all`
-    exclude:
-      - "this line is used by starport scaffolding .*"
   lll:
     line-length: 135
-output:
-  uniq-by-line: false
-
+  tagliatelle:
+    case:
+      use-field-name: true
+      rules:
+        json: snake
+        yaml: snake
 issues:
+  uniq-by-line: false
   max-issues-per-linter: 0
   max-same-issues: 0
   exclude-rules:
@@ -86,12 +89,9 @@ issues:
         - errorlint
     - path: "_test\\.go"
       linters:
-        - bodyclose
-        - revive
         - dupl
         - funlen
-        - goconst
-        - noctx
-        - unused
-        - wrapcheck
-        - lll
+    - path: "_test\\.go"
+      linters:
+        - revive
+      text: "dot-imports:"
