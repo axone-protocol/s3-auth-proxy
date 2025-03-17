@@ -12,12 +12,31 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge)](https://github.com/axone-protocol/.github/blob/main/CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg?style=for-the-badge)](https://opensource.org/licenses/BSD-3-Clause)
 
-## Prerequisites
+## Overview
+
+The S3 proxy is a service that exposes files stored on an S3 server to the Axone protocol. It acts as an authentication and authorization layer, ensuring that access requests comply with the decentralized governance rules established on-chain.
+
+```mermaid
+flowchart LR
+    actor@{ shape: circle, label: "🧑" }
+    s3Proxy@{ shape: lin-cyl, label: "S3 Proxy" }
+    s3@{shape: lin-cyl, label: "S3<br>server"}
+    files@{ shape: docs, label: "files" }
+    axone@{ shape: das, label: "Axone chain" }
+    s3 --> files
+
+    actor -- access --> s3Proxy
+
+    s3Proxy ~~~
+
+    s3Proxy -. ① check .-> axone
+    s3Proxy -. ② access .-> s3
+```
+
+## Build
 
 - Be sure you have [Golang](https://go.dev/doc/install) installed.
 - [Docker](https://docs.docker.com/engine/install/) as well if you want to use the Makefile.
-
-## Build
 
 ```sh
 make build
