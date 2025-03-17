@@ -12,20 +12,19 @@ import (
 	"github.com/axone-protocol/axone-sdk/keys"
 	"github.com/axone-protocol/axone-sdk/provider/storage"
 	"github.com/gorilla/mux"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/piprate/json-gold/ld"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
-
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
 	grpccreds "google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// nolint: gosec
+//nolint:gosec
 const (
 	FlagNodeGrpc          = "node-grpc"
 	FlagGrpcNoTLS         = "grpc-no-tls"
@@ -143,7 +142,7 @@ func logMiddlewares() []mux.MiddlewareFunc {
 	}
 }
 
-// nolint: lll
+//nolint:lll
 func init() {
 	rootCmd.AddCommand(startCmd)
 
@@ -166,7 +165,6 @@ func init() {
 	startCmd.PersistentFlags().BoolVar(&s3Insecure, FlagS3Insecure, false, "If specified we'll accept non encrypted connection with the S3")
 }
 
-// nolint: gosec
 func getTransportCredentials() grpccreds.TransportCredentials {
 	switch {
 	case grpcNoTLS:

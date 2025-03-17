@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/axone-protocol/s3-auth-proxy/internal/version"
-
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )

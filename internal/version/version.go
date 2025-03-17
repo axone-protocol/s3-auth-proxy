@@ -15,8 +15,8 @@ var (
 type Info struct {
 	Name      string `json:"name" yaml:"name"`
 	Version   string `json:"version" yaml:"version"`
-	GitCommit string `json:"commit" yaml:"commit"`
-	GoVersion string `json:"go" yaml:"go"`
+	GitCommit string `json:"commit" yaml:"commit"` //nolint:tagliatelle
+	GoVersion string `json:"go" yaml:"go"`         //nolint:tagliatelle
 }
 
 func NewInfo() Info {

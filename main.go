@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/axone-protocol/s3-auth-proxy/cmd"
-
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
