@@ -4,7 +4,7 @@
 BINARY_NAME             = s3-auth-proxy
 TARGET_FOLDER           = target
 DIST_FOLDER             = $(TARGET_FOLDER)/dist
-DOCKER_IMAGE_GOLANG_CI  = golangci/golangci-lint:v1.55
+DOCKER_IMAGE_GOLANG_CI  = golangci/golangci-lint:v2.0
 
 BINARY 	:= ./${DIST_FOLDER}/${BINARY_NAME}
 
