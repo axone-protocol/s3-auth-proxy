@@ -3,7 +3,7 @@ module github.com/axone-protocol/s3-auth-proxy
 go 1.24.1
 
 require (
-	github.com/axone-protocol/axone-sdk v1.1.0
+	github.com/axone-protocol/axone-sdk v1.2.0
 	github.com/gorilla/mux v1.8.1
 	github.com/minio/minio-go/v7 v7.0.90
 	github.com/piprate/json-gold v0.5.1-0.20230111113000-6ddbe6e6f19f
@@ -36,9 +36,9 @@ require (
 	github.com/DataDog/datadog-go v3.2.0+incompatible // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect
 	github.com/VictoriaMetrics/fastcache v1.5.7 // indirect
-	github.com/axone-protocol/axone-contract-schema/go/cognitarium-schema/v5 v5.0.0-20240826124342-6e6abdf73c9a // indirect
-	github.com/axone-protocol/axone-contract-schema/go/dataverse-schema/v5 v5.0.0-20240826124342-6e6abdf73c9a // indirect
-	github.com/axone-protocol/axone-contract-schema/go/law-stone-schema/v5 v5.0.0-20240829161824-0ad316c6fda9 // indirect
+	github.com/axone-protocol/axone-contract-schema/go/cognitarium-schema/v6 v6.0.0-20250411103805-21486d26bb1e // indirect
+	github.com/axone-protocol/axone-contract-schema/go/dataverse-schema/v6 v6.0.0-20250411103805-21486d26bb1e // indirect
+	github.com/axone-protocol/axone-contract-schema/go/law-stone-schema/v6 v6.0.0-20250411103805-21486d26bb1e // indirect
 	github.com/axone-protocol/axoned/v10 v10.0.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
