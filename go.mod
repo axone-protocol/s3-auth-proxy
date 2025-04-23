@@ -5,7 +5,7 @@ go 1.24.1
 require (
 	github.com/axone-protocol/axone-sdk v1.2.0
 	github.com/gorilla/mux v1.8.1
-	github.com/minio/minio-go/v7 v7.0.90
+	github.com/minio/minio-go/v7 v7.0.91
 	github.com/piprate/json-gold v0.5.1-0.20230111113000-6ddbe6e6f19f
 	github.com/rs/zerolog v1.34.0
 	github.com/smartystreets/goconvey v1.8.1
