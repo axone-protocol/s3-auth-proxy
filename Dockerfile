@@ -8,7 +8,7 @@ COPY . /src/
 RUN make build CGO_ENABLED=0
 
 #--- Image stage
-FROM alpine:3.22.0
+FROM alpine:3.22.1
 
 COPY --from=go-builder /src/target/dist/s3-auth-proxy /usr/bin/s3-auth-proxy
 
